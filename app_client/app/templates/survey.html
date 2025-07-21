@@ -15,6 +15,12 @@
             <!-- Survey questions will be inserted here -->
             <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
+        <div id="thankyou-page" style="display:none; text-align:center;">
+            <h2>Спасибо, ваши данные записаны!</h2>
+            <div id="server-response-bg" class="server-response-bg">
+                <span id="server-response" class="server-response-text"></span>
+            </div>
+        </div>
     </div>
     <script>
         // Extract UUID from URL (e.g., /survey/<uuid>)

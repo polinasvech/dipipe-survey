@@ -57,6 +57,27 @@ body {
     box-shadow: none;
     border: none;
 }
+.server-response-bg {
+    margin: 0 auto 0 auto;
+    width: 100%;
+    max-width: 100%;
+    height: 250px;
+    background: url('/static/tomka_thinking.jpg') center center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    position: relative;
+}
+.server-response-text {
+    color: #000000;
+    padding: 0px 0px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-align: center;
+    max-width: 90%;
+}
 @media (max-width: 700px) {
     .survey-container {
         max-width: 98vw;

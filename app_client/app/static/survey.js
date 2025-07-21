@@ -151,7 +151,18 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             .then(res => res.json())
             .then(res => {
                 if (res.status === 'ok') {
-                    alert('Ответы успешно отправлены!');
+                    form.style.display = 'none';
+                    document.getElementById('thankyou-page').style.display = 'block';
+                    const msg = res.message || '';
+                    const bg = document.getElementById('server-response-bg');
+                    const txt = document.getElementById('server-response');
+                    if (msg.trim()) {
+                        bg.style.display = 'flex';
+                        txt.textContent = msg;
+                    } else {
+                        bg.style.display = 'none';
+                        txt.textContent = '';
+                    }
                 } else {
                     alert('Ошибка отправки: ' + (res.message || 'unknown error'));
                 }
