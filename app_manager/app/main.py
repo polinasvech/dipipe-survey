@@ -21,8 +21,8 @@ def startup():
     loop = asyncio.get_event_loop()
 
 
-app.include_router(answer_router, prefix='/answer')
-app.include_router(manager_router, prefix='/manager')
-app.include_router(question_router, prefix='/question')
-app.include_router(survey_router, prefix='/survey')
-app.include_router(template_router, prefix='/template')
+app.include_router(answer_router)
+app.include_router(manager_router)
+app.include_router(question_router)
+app.include_router(survey_router)
+app.include_router(template_router)

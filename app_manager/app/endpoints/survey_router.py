@@ -32,7 +32,7 @@ def get_survey_by_id(
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
 
 
-@survey_router.post("/")
+@survey_router.post("/create_survey")
 def create_survey(
     name: str,
     start_date: datetime,

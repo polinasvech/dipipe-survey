@@ -14,4 +14,4 @@ def startup():
     loop = asyncio.get_event_loop()
 
 
-app.include_router(client_router, prefix='/client')
+app.include_router(client_router)

@@ -1,12 +1,12 @@
 from uuid import UUID
 import traceback
 from typing import List
-
+from typing import Union
 from sqlalchemy.orm import Session
 
 from app_client.app.schemas.base_schema import get_db
 from app_client.app.schemas.client_schema import Client as DBClient
-from app_client.app.models.client_model import Client as ClientSchema, CreateClientRequest
+from app_client.app.models.client_model import Client as Client, CreateClientRequest
 
 
 class ClientRepo:
@@ -15,13 +15,20 @@ class ClientRepo:
     def __init__(self) -> None:
         self.db = next(get_db())
 
-    def _map_to_model(self, client: DBClient) -> ClientSchema:
-        return ClientSchema(**dict(client))
+    def _map_to_model(self, client: DBClient) -> Client:
+        result = Client.from_orm(client)
+        return result
 
-    def _map_to_schema(self, client: ClientSchema | CreateClientRequest) -> DBClient:
-        return DBClient(**client.model_dump())
+    def _map_to_schema(self, client: Client) -> DBClient:
+        return DBClient(
+            uuid=client.uuid,
+            tin=client.tin,
+            preferences=client.preferences,
+            division=client.division,
+            ca_type=client.ca_type
+        )
 
-    def create_client(self, client: CreateClientRequest) -> ClientSchema:
+    def create_client(self, client: Client) -> Client:
         try:
             db_client = self._map_to_schema(client)
             self.db.add(db_client)
@@ -33,16 +40,16 @@ class ClientRepo:
             self.db.rollback()
             raise
 
-    def get_all_clients(self) -> List[ClientSchema]:
+    def get_all_clients(self) -> List[Client]:
         return [self._map_to_model(c) for c in self.db.query(DBClient).all()]
 
-    def get_client_by_id(self, client_id: UUID) -> ClientSchema:
+    def get_client_by_id(self, client_id: UUID) -> Client:
         client = self.db.query(DBClient).filter(DBClient.uuid == client_id).first()
         if not client:
             raise KeyError(f"Client with id {client_id} not found.")
         return self._map_to_model(client)
 
-    def update_client(self, client: ClientSchema) -> ClientSchema:
+    def update_client(self, client: Client) -> Client:
         try:
             db_client = self.db.query(DBClient).filter(DBClient.uuid == client.uuid).first()
             for field, value in client.model_dump().items():
