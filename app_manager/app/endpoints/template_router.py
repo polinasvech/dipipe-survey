@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.schemas.template_schema import Template
+from app_manager.app.models.template_model import Template,CreateTemplateRequest
 from app_manager.app.services.template_service import TemplateService
 
 template_router = APIRouter(prefix="/templates", tags=["Templates"])
@@ -29,12 +29,11 @@ def get_template_by_id(
 
 @template_router.post("/")
 def create_template(
-    initial_survey_id: UUID,
-    template_text: Optional[str] = None,
+    request: CreateTemplateRequest,
     template_service: TemplateService = Depends(TemplateService),
 ) -> Template:
     try:
-        return template_service.create_template(initial_survey_id, template_text)
+        return template_service.create_template(request.initial_survey_id, request.template_text)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

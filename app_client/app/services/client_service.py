@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import List, Optional
 
 from fastapi import Depends
@@ -11,18 +11,22 @@ class ClientService:
     def __init__(self, client_repo: ClientRepo = Depends(ClientRepo)) -> None:
         self.client_repo = client_repo
 
-    def create_client(self, client_id: UUID, tin: str,
-        preferences: str,
-        division: str,
-        ca_type: str) -> Client:
+    def create_client(
+            self,
+            tin: str,
+            preferences: Optional[str] = None,
+            division: Optional[str] = None,
+            ca_type: Optional[str] = None
+    ) -> Client:
         client = Client(
-            uuid= client_id,
-            tin = tin,
-            preferences = preferences,
-            division= division,
-            ca_type= ca_type,
+            uuid = uuid4(),
+            tin=tin,
+            preferences=preferences,
+            division=division,
+            ca_type=ca_type
         )
         return self.client_repo.create_client(client)
+
 
     def get_all_clients(self) -> List[Client]:
         return self.client_repo.get_all_clients()

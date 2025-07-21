@@ -17,6 +17,9 @@ class QuestionService:
     def get_question_by_id(self, question_id: UUID) -> Question:
         return self.question_repo.get_question_by_id(question_id)
 
+    def get_questions_by_survey_id(self, survey_id: UUID) -> List[Question]:
+        return self.question_repo.get_questions_by_survey_id(survey_id)
+
     def create_question(self, survey_id: UUID, text: str) -> Question:
         question = Question(uuid=uuid4(), survey_id=survey_id, text=text)
         return self.question_repo.create_question(question)

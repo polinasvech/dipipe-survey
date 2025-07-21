@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_client.app.schemas.client_schema import Client
+from app_client.app.models.client_model import Client,CreateClientRequest
 from app_client.app.services.client_service import ClientService
 
 client_router = APIRouter(prefix="/clients", tags=["Clients"])
@@ -9,15 +9,16 @@ client_router = APIRouter(prefix="/clients", tags=["Clients"])
 
 @client_router.post("/")
 def create_client(
-    client_id: UUID,
-    tin: str,
-    preferences: str,
-    division: str,
-    ca_type: str,
+    request: CreateClientRequest,
     client_service: ClientService = Depends(ClientService),
 ) -> Client:
     try:
-        return client_service.create_client(client_id, tin, preferences, division, ca_type)
+        return client_service.create_client(
+            tin=request.tin,
+            preferences=request.preferences,
+            division=request.division,
+            ca_type=request.ca_type
+        )
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

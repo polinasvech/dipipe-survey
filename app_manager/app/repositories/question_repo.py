@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app_manager.app.schemas.base_schema import get_db
 from app_manager.app.schemas.question_schema import Question as DBQuestion
-from app_manager.app.models.question_model import Question as QuestionSchema, CreateQuestionRequest
+from app_manager.app.models.question_model import Question as Question, CreateQuestionRequest
 
 
 class QuestionRepo:
@@ -15,13 +15,17 @@ class QuestionRepo:
     def __init__(self) -> None:
         self.db = next(get_db())
 
-    def _map_to_model(self, question: DBQuestion) -> QuestionSchema:
-        return QuestionSchema(**dict(question))
+    def _map_to_model(self, question: DBQuestion) -> Question:
+        return Question.from_orm(question)
 
-    def _map_to_schema(self, question: QuestionSchema | CreateQuestionRequest) -> DBQuestion:
-        return DBQuestion(**question.model_dump())
+    def _map_to_schema(self, question: Question) -> DBQuestion:
+        return DBQuestion(
+            uuid=question.uuid,
+            survey_id=question.survey_id,
+            text=question.text
+        )
 
-    def create_question(self, question: CreateQuestionRequest) -> QuestionSchema:
+    def create_question(self, question: Question) -> Question:
         try:
             db_question = self._map_to_schema(question)
             self.db.add(db_question)
@@ -33,16 +37,24 @@ class QuestionRepo:
             self.db.rollback()
             raise
 
-    def get_all_questions(self) -> List[QuestionSchema]:
+    def get_all_questions(self) -> List[Question]:
         return [self._map_to_model(q) for q in self.db.query(DBQuestion).all()]
 
-    def get_question_by_id(self, question_id: UUID) -> QuestionSchema:
+    def get_question_by_id(self, question_id: UUID) -> Question:
         question = self.db.query(DBQuestion).filter(DBQuestion.uuid == question_id).first()
         if not question:
             raise KeyError(f"Question with id {question_id} not found.")
         return self._map_to_model(question)
 
-    def update_question(self, question: QuestionSchema) -> QuestionSchema:
+    def get_questions_by_survey_id(self, survey_id: UUID) -> List[Question]:
+        survey_id_str = str(survey_id)
+        questions = self.db.query(DBQuestion) \
+            .filter(DBQuestion.survey_id == survey_id_str) \
+            .all()
+        return [self._map_to_model(q) for q in questions]
+
+
+    def update_question(self, question: Question) -> Question:
         try:
             db_question = self.db.query(DBQuestion).filter(DBQuestion.uuid == question.uuid).first()
             for field, value in question.model_dump().items():
