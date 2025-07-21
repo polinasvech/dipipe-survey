@@ -151,6 +151,18 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             }
         });
 
+        // Add click handler for important-img to swap to tomka_touched.png and hide after 0.5s
+        const importantImg = document.getElementById('important-img');
+        if (importantImg) {
+            importantImg.addEventListener('click', function handleClick() {
+                importantImg.src = '/static/tomka_touched.png';
+                setTimeout(() => {
+                    importantImg.style.display = 'none';
+                    importantImg.src = '/static/tomka_important.png'; // restore for next time
+                }, 500);
+            });
+        }
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             // Collect answers from localStorage
@@ -178,6 +190,13 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             });
             if (!allValid) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Show important image for 3 seconds
+                const img = document.getElementById('important-img');
+                if (img) {
+                    img.style.display = 'block';
+                    img.src = '/static/tomka_important.png'; // always reset to important on show
+                    setTimeout(() => { img.style.display = 'none'; }, 5000);
+                }
                 return;
             }
             // Fill ansvers fields in questions
