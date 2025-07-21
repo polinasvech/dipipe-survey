@@ -21,7 +21,7 @@ class TemplateService:
         template = Template(uuid=uuid4(), initial_survey_id=initial_survey_id, template_text=template_text)
         return self.template_repo.create_template(template)
 
-    def update_manager(self, initial_survey_id: UUID, template_text: Optional[str]) -> Template:
+    def update_template(self, initial_survey_id: UUID, template_text: Optional[str]) -> Template:
         template = Template(uuid=uuid4(), initial_survey_id=initial_survey_id, template_text=template_text)
         return self.template_repo.update_template(template)
 

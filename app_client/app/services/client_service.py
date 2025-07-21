@@ -24,7 +24,7 @@ class ClientService:
         )
         return self.client_repo.create_client(client)
 
-    def get_clients (self) -> List[Client]:
+    def get_all_clients(self) -> List[Client]:
         return self.client_repo.get_all_clients()
 
     def get_client_by_id(self, client_id: UUID) -> Client:
@@ -33,7 +33,7 @@ class ClientService:
     def delete_client(self, client_id: UUID) -> None:
         return self.client_repo.delete_client(client_id)
 
-    def update_answer(self, client_id: UUID, tin: str,
+    def update_client(self, client_id: UUID, tin: str,
         preferences: str,
         division: str,
         ca_type: str) -> Client:
