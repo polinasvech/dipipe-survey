@@ -50,3 +50,15 @@ class TemplateRepo:
             traceback.print_exc()
             self.db.rollback()
             raise
+
+    def update_template(self, template: TemplateSchema) -> TemplateSchema:
+        try:
+            db_template = self.db.query(DBTemplate).filter(DBTemplate.uuid == template.uuid).first()
+            for field, value in template.model_dump().items():
+                setattr(db_template, field, value)
+            self.db.commit()
+            return self._map_to_model(db_template)
+        except Exception:
+            traceback.print_exc()
+            self.db.rollback()
+            raise

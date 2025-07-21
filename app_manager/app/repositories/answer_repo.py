@@ -50,3 +50,15 @@ class AnswerRepo:
             traceback.print_exc()
             self.db.rollback()
             raise
+
+    def update_answer(self, answer: AnswerSchema) -> AnswerSchema:
+        try:
+            db_answer = self.db.query(DBAnswer).filter(DBAnswer.uuid == answer.uuid).first()
+            for field, value in answer.model_dump().items():
+                setattr(db_answer, field, value)
+            self.db.commit()
+            return self._map_to_model(db_answer)
+        except Exception:
+            traceback.print_exc()
+            self.db.rollback()
+            raise
