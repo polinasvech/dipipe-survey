@@ -2,36 +2,52 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+    container_name: postgres
+    image: postgres:17-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres_db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres_db/postgres_data:/var/lib/postgresql/data
     networks:
       - app
+    environment:
+      POSTGRES_PASSWORD: 'password'
 
-
-  app_client:
-    build:
-      context: .
-      dockerfile: /app_client/Dockerfile
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "88:88"
+      - "5050:80"
+    networks:
+      - app
     depends_on:
       - postgres
-    networks:
-      - app
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+
+#  app_client:
+#    build:
+#      context: .
+#      dockerfile: ./app_client/Dockerfile
+#    ports:
+#      - "8001:8001"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - app
 
   app_manager:
     build:
-      context: .
-      dockerfile: /app_manager/Dockerfile
+      context: ./app_manager
+      dockerfile: Dockerfile
+    volumes:
+      - ./app_manager/app:/opt/app
     ports:
-      - "87:87"
+      - "8002:8002"
     depends_on:
       - postgres
     networks:
