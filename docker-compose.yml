@@ -29,21 +29,23 @@ services:
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
 
-  app_client:
-    build:
-      context: .
-      dockerfile: ./app_client/Dockerfile
-    ports:
-      - "8001:8001"
-    depends_on:
-      - postgres
-    networks:
-      - app
+#  app_client:
+#    build:
+#      context: .
+#      dockerfile: ./app_client/Dockerfile
+#    ports:
+#      - "8001:8001"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - app
 
   app_manager:
     build:
-      context: .
-      dockerfile: ./app_manager/Dockerfile
+      context: ./app_manager
+      dockerfile: Dockerfile
+    volumes:
+      - ./app_manager/app:/opt/app
     ports:
       - "8002:8002"
     depends_on:
