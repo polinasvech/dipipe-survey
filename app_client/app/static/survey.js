@@ -252,7 +252,9 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             });
             const payload = {
                 ...data,
-                questions: questionsWithAnswers
+                questions: questionsWithAnswers,
+                datetime: new Date().toISOString(),
+                timezone: new Date().getTimezoneOffset()
             };
             fetch('/api/survey/create_survey', {
                 method: 'POST',
