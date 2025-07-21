@@ -9,14 +9,17 @@
     <link rel="stylesheet" href="/static/survey.css">
 </head>
 <body>
-    <div id="progress-bar-container" style="position:fixed;top:0;left:0;width:100vw;height:5px;z-index:10000;background:transparent;">
+    <div style="width:100vw;position:fixed;top:0;left:0;height:48px;background:#fff;z-index:11000;box-shadow:0 1px 4px rgba(0,0,0,0.04);display:flex;align-items:center;">
+        <img src="/static/tmk_logo.png" alt="Logo" style="height:48px;margin-left:24px;">
+    </div>
+    <div id="progress-bar-container" style="position:fixed;top:48px;left:0;width:100vw;height:5px;z-index:10000;background:transparent;">
         <div id="progress-bar" style="height:100%;width:0;background:#f47832;transition:width 0.4s cubic-bezier(.4,0,.2,1);"></div>
     </div>
     <div class="survey-container">
         <div class="survey-title">Survey</div>
         <form id="survey-form">
             <!-- Survey questions here -->
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
+            <button type="submit" class="btn btn-primary w-100">Отправить</button>
         </form>
         <div id="thankyou-page" style="display:none; text-align:center;">
             <h2>Спасибо, ваши данные записаны!</h2>
