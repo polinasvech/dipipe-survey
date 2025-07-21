@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 
 
-CREATE TABLE IF NOT EXISTS answers (
+CREATE TABLE answers (
     client_id   uuid NOT NULL,
     survey_id   uuid NOT NULL,
-    question_id   uuid NOT NULL,
+    question_id uuid NOT NULL,
     answer_int  int,
     answer_text text,
-    PRIMARY KEY(client_id, survey_id),
+    PRIMARY KEY (client_id, survey_id, question_id),
     CONSTRAINT fk_client
         FOREIGN KEY (client_id)
         REFERENCES clients(uuid)

@@ -1,5 +1,6 @@
 pgadmin_data/
 postgres_db/postgres_data/
+app_manager/app/data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
