@@ -1,4 +1,6 @@
 import os
+
+import requests
 from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
@@ -10,13 +12,21 @@ app.config['SECRET_KEY'] = "mykey"  # Replace with a secure key in production
 def hello():
     return 'Hello, Flask!'
 
-@app.route('/survey')
-def survey():
+@app.route('/survey/<uuid>')
+def survey(uuid):
     return render_template('survey.html')
 
-@app.route('/api/survey')
-def api_survey():
-    # Example survey data with new structure
+@app.route('/api/survey/<uuid>', methods=['GET'])
+def api_survey(uuid):
+    try:
+        #response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
+        response = requests.get(f"http://localhost:80/get_survey_by_id/{uuid}")
+        data = response.json()
+        return jsonify({"status": "ok", "frontend_response": data})
+    except requests.exceptions.RequestException as e:
+        return jsonify({"status": "error", "message": str(e)})
+@app.route('/get_survey_by_id/<uuid>', methods=['GET'])
+def get_survey_by_id(uuid):
     survey = {
         "title": "Customer Feedback Survey",
         "id": "survey001",
@@ -61,6 +71,5 @@ def api_survey():
         ]
     }
     return jsonify(survey)
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)
