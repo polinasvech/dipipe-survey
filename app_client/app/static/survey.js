@@ -21,6 +21,9 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             }
         });
 
+        // Для отслеживания, трогал ли пользователь ползунок (int/rating)
+        const interactedSliders = {};
+
         // Set survey title if present
         if (data.title) {
             const titleElem = document.querySelector('.survey-title');
@@ -57,6 +60,14 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 if (saved[qid]) input.value = saved[qid];
                 input.addEventListener('input', () => {
                     saveAnswer(qid, input.value);
+                    updateProgressBar();
+                    if (q.required) {
+                        if (input.value && input.value.trim() !== '') {
+                            div.classList.remove('border', 'border-danger');
+                        } else {
+                            div.classList.add('border', 'border-danger');
+                        }
+                    }
                 });
                 div.appendChild(input);
                 inputRef = input;
@@ -79,6 +90,15 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 input.addEventListener('input', () => {
                     valueLabel.textContent = input.value;
                     saveAnswer(qid, input.value);
+                    interactedSliders[qid] = true;
+                    updateProgressBar();
+                    if (q.required) {
+                        if (interactedSliders[qid]) {
+                            div.classList.remove('border', 'border-danger');
+                        } else {
+                            div.classList.add('border', 'border-danger');
+                        }
+                    }
                 });
                 sliderDiv.appendChild(input);
                 sliderDiv.appendChild(valueLabel);
@@ -122,9 +142,25 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 }
                 yesInput.addEventListener('change', () => {
                     if (yesInput.checked) saveAnswer(qid, 'yes');
+                    updateProgressBar();
+                    if (q.required) {
+                        if (yesInput.checked || noInput.checked) {
+                            div.classList.remove('border', 'border-danger');
+                        } else {
+                            div.classList.add('border', 'border-danger');
+                        }
+                    }
                 });
                 noInput.addEventListener('change', () => {
                     if (noInput.checked) saveAnswer(qid, 'no');
+                    updateProgressBar();
+                    if (q.required) {
+                        if (yesInput.checked || noInput.checked) {
+                            div.classList.remove('border', 'border-danger');
+                        } else {
+                            div.classList.add('border', 'border-danger');
+                        }
+                    }
                 });
             } else if (q.type === 'datetime') {
                 const input = document.createElement('input');
@@ -135,6 +171,14 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 if (saved[qid]) input.value = saved[qid];
                 input.addEventListener('input', () => {
                     saveAnswer(qid, input.value);
+                    updateProgressBar();
+                    if (q.required) {
+                        if (input.value && input.value.trim() !== '') {
+                            div.classList.remove('border', 'border-danger');
+                        } else {
+                            div.classList.add('border', 'border-danger');
+                        }
+                    }
                 });
                 div.appendChild(input);
                 inputRef = input;
@@ -177,7 +221,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 if (Array.isArray(inputRef)) {
                     answered = inputRef.some(inp => inp.checked);
                 } else if (inputRef && inputRef.type === 'range') {
-                    answered = answers[qid] !== undefined && answers[qid] !== '';
+                    answered = !!interactedSliders[qid];
                 } else if (inputRef) {
                     answered = inputRef.value && inputRef.value.trim() !== '';
                 }
@@ -242,4 +286,28 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             answers[qid] = value;
             localStorage.setItem(storageKey, JSON.stringify(answers));
         }
+
+        // Функция для обновления прогресс-бара
+        function updateProgressBar() {
+            const totalRequired = Object.keys(requiredQuestions).length;
+            if (totalRequired === 0) {
+                document.getElementById('progress-bar').style.width = '0';
+                return;
+            }
+            let answered = 0;
+            Object.entries(requiredQuestions).forEach(([qid, { inputRef }]) => {
+                if (Array.isArray(inputRef)) {
+                    if (inputRef.some(inp => inp.checked)) answered++;
+                } else if (inputRef && inputRef.type === 'range') {
+                    if (interactedSliders[qid]) answered++;
+                } else if (inputRef) {
+                    if (inputRef.value && inputRef.value.trim() !== '') answered++;
+                }
+            });
+            const percent = Math.round((answered / totalRequired) * 100);
+            document.getElementById('progress-bar').style.width = percent + '%';
+        }
+
+        // Вызов при инициализации
+        updateProgressBar();
     }); 

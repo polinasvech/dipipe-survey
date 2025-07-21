@@ -38,14 +38,42 @@ def get_survey_by_id(uuid):
         "id": "survey001",
         "questions": [
             {
-                "id": "q1",
+                "id": "q16",
                 "text": "What is your name? (ИНН или название компании)",
                 "type": "tin",
                 "required": True,
                 "ansvers": []
             },
             {
-                "id": "q2",
+                "id": "q25",
+                "text": "What is your favorite programming language?",
+                "type": "str",
+                "required": False,
+                "ansvers": []
+            },
+            {
+                "id": "q24",
+                "text": "What is your favorite programming language?",
+                "type": "str",
+                "required": False,
+                "ansvers": []
+            },
+            {
+                "id": "q23",
+                "text": "What is your favorite programming language?",
+                "type": "str",
+                "required": False,
+                "ansvers": []
+            },
+            {
+                "id": "q22",
+                "text": "What is your favorite programming language?",
+                "type": "str",
+                "required": False,
+                "ansvers": []
+            },
+            {
+                "id": "q21",
                 "text": "What is your favorite programming language?",
                 "type": "str",
                 "required": False,
