@@ -7,12 +7,19 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
         }
         const data = resp.frontend_response;
         const form = document.getElementById('survey-form');
-        const storageKey = 'survey_answers_' + (data.id || 'default');
+        const storageKey = 'survey_answers_' + window.SURVEY_UUID;
         // Restore saved answers if present
         let saved = {};
         try {
             saved = JSON.parse(localStorage.getItem(storageKey)) || {};
         } catch (e) { saved = {}; }
+
+        // Debug: print all survey_answers_* keys in localStorage
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('survey_answers_')) {
+                console.log(key, localStorage.getItem(key));
+            }
+        });
 
         // Set survey title if present
         if (data.title) {
@@ -20,14 +27,26 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             if (titleElem) titleElem.textContent = data.title;
         }
 
+        // Track required question elements for validation
+        const requiredQuestions = {};
+
         data.questions.forEach((q, idx) => {
             const div = document.createElement('div');
             div.className = 'mb-3';
             const label = document.createElement('label');
             label.textContent = q.text;
             label.className = 'form-label';
+            if (q.required) {
+                const star = document.createElement('span');
+                star.className = 'required-star';
+                star.textContent = '*';
+                label.appendChild(star);
+            }
             div.appendChild(label);
             const qid = q.id;
+
+            // For validation, keep reference to input(s)
+            let inputRef = null;
 
             if (q.type === 'str' || q.type === 'tin') {
                 const input = document.createElement('input');
@@ -40,6 +59,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                     saveAnswer(qid, input.value);
                 });
                 div.appendChild(input);
+                inputRef = input;
             } else if (q.type === 'int') {
                 const sliderDiv = document.createElement('div');
                 sliderDiv.style.display = 'flex';
@@ -63,6 +83,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 sliderDiv.appendChild(input);
                 sliderDiv.appendChild(valueLabel);
                 div.appendChild(sliderDiv);
+                inputRef = input;
             } else if (q.type === 'bool') {
                 const yesDiv = document.createElement('div');
                 yesDiv.className = 'form-check form-check-inline';
@@ -94,6 +115,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 noDiv.appendChild(noInput);
                 noDiv.appendChild(noLabel);
                 div.appendChild(noDiv);
+                inputRef = [yesInput, noInput];
                 if (saved[qid]) {
                     if (saved[qid] === 'yes') yesInput.checked = true;
                     if (saved[qid] === 'no') noInput.checked = true;
@@ -115,6 +137,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                     saveAnswer(qid, input.value);
                 });
                 div.appendChild(input);
+                inputRef = input;
             }
             form.insertBefore(div, form.lastElementChild);
             // Add divider after each question except the last
@@ -122,6 +145,9 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 const hr = document.createElement('hr');
                 hr.className = 'question-divider';
                 form.insertBefore(hr, form.lastElementChild);
+            }
+            if (q.required) {
+                requiredQuestions[qid] = { label, inputRef, div };
             }
         });
 
@@ -132,6 +158,28 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             try {
                 answers = JSON.parse(localStorage.getItem(storageKey)) || {};
             } catch (e) { answers = {}; }
+            // Validate required questions
+            let allValid = true;
+            Object.entries(requiredQuestions).forEach(([qid, { label, inputRef, div }]) => {
+                let answered = false;
+                if (Array.isArray(inputRef)) {
+                    answered = inputRef.some(inp => inp.checked);
+                } else if (inputRef && inputRef.type === 'range') {
+                    answered = answers[qid] !== undefined && answers[qid] !== '';
+                } else if (inputRef) {
+                    answered = inputRef.value && inputRef.value.trim() !== '';
+                }
+                if (!answered) {
+                    allValid = false;
+                    div.classList.add('border', 'border-danger');
+                } else {
+                    div.classList.remove('border', 'border-danger');
+                }
+            });
+            if (!allValid) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
             // Fill ansvers fields in questions
             const questionsWithAnswers = data.questions.map(q => {
                 return {
