@@ -5,7 +5,7 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "mykey"  # Replace with a secure key in production
+app.config['SECRET_KEY'] = "kalanod"
 
 
 @app.route('/')
