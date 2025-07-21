@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS answers (
     CONSTRAINT fk_survey_answer
         FOREIGN KEY (survey_id)
         REFERENCES surveys(uuid)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT fk_question_answer
         FOREIGN KEY (question_id)
         REFERENCES questions(uuid)
