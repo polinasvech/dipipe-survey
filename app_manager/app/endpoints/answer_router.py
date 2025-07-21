@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.schemas.answer_schema import Answer
+from app_manager.app.models.answer_model import Answer,CreateAnswerRequest
 from app_manager.app.services.answer_service import AnswerService
 
 answer_router = APIRouter(prefix="/answers", tags=["Answers"])
@@ -11,14 +11,11 @@ answer_router = APIRouter(prefix="/answers", tags=["Answers"])
 
 @answer_router.post("/")
 def create_answer(
-    client_id: UUID,
-    survey_id: UUID,
-    answer_int: Optional[int] = None,
-    answer_text: Optional[str] = None,
+    request: CreateAnswerRequest,
     answer_service: AnswerService = Depends(AnswerService),
 ) -> Answer:
     try:
-        return answer_service.create_answer(client_id, survey_id, answer_int, answer_text)
+        return answer_service.create_answer(request.client_id, request.survey_id, request.answer_int, request.answer_text)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

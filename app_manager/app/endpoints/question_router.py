@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.schemas.question_schema import Question
+from app_manager.app.models.question_model import Question,CreateQuestionRequest
 from app_manager.app.services.question_service import QuestionService
 
 question_router = APIRouter(prefix="/questions", tags=["Questions"])
@@ -24,15 +24,23 @@ def get_question_by_id(
     except KeyError:
         raise HTTPException(404, detail=f"Question with id={question_id} not found")
 
+@question_router.get("/get_question_by_survey/{survey_id}")
+def get_question_by_survey_id(
+    survey_id: UUID,
+    question_service: QuestionService = Depends(QuestionService),
+) -> list[Question]:
+    try:
+        return question_service.get_questions_by_survey_id(survey_id)
+    except KeyError:
+        raise HTTPException(404, detail=f"Question with survey_id={survey_id} not found")
 
 @question_router.post("/")
 def create_question(
-    survey_id: UUID,
-    text: str,
+    request: CreateQuestionRequest,
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.create_question(survey_id, text)
+        return question_service.create_question(request.survey_id, request.text)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

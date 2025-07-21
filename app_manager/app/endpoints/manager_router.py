@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.schemas.manager_schema import Manager
+from app_manager.app.models.manager_model import Manager,CreateManagerRequest
 from app_manager.app.services.manager_service import ManagerService
 
 manager_router = APIRouter(prefix="/managers", tags=["Managers"])
@@ -27,11 +27,11 @@ def get_manager_by_id(
 
 @manager_router.post("/")
 def create_manager(
-    full_name: str,
+    request: CreateManagerRequest,
     manager_service: ManagerService = Depends(ManagerService),
 ) -> Manager:
     try:
-        return manager_service.create_manager(full_name)
+        return manager_service.create_manager(request.full_name)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

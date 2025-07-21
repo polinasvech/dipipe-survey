@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app_manager.app.schemas.base_schema import get_db
 from app_manager.app.schemas.syrvey_schema import Survey as DBSurvey
-from app_manager.app.models.survey_model import Survey as SurveySchema, CreateSurveyRequest
+from app_manager.app.models.survey_model import Survey as Survey, CreateSurveyRequest
 
 
 class SurveyRepo:
@@ -15,13 +15,19 @@ class SurveyRepo:
     def __init__(self) -> None:
         self.db = next(get_db())
 
-    def _map_to_model(self, survey: DBSurvey) -> SurveySchema:
-        return SurveySchema(**dict(survey))
+    def _map_to_model(self, survey: DBSurvey) -> Survey:
+        return Survey.from_orm(survey)
 
-    def _map_to_schema(self, survey: SurveySchema | CreateSurveyRequest) -> DBSurvey:
-        return DBSurvey(**survey.model_dump())
+    def _map_to_schema(self, survey: Survey) -> DBSurvey:
+        return DBSurvey(
+            uuid=survey.uuid,
+            name=survey.name,
+            start_date=survey.start_date,
+            end_date=survey.end_date,
+            manager_id=survey.manager_id
+        )
 
-    def create_survey(self, survey: CreateSurveyRequest) -> SurveySchema:
+    def create_survey(self, survey: Survey) -> Survey:
         try:
             db_survey = self._map_to_schema(survey)
             self.db.add(db_survey)
@@ -33,16 +39,16 @@ class SurveyRepo:
             self.db.rollback()
             raise
 
-    def get_all_surveys(self) -> List[SurveySchema]:
+    def get_all_surveys(self) -> List[Survey]:
         return [self._map_to_model(s) for s in self.db.query(DBSurvey).all()]
 
-    def get_survey_by_id(self, survey_id: UUID) -> SurveySchema:
+    def get_survey_by_id(self, survey_id: UUID) -> Survey:
         survey = self.db.query(DBSurvey).filter(DBSurvey.uuid == survey_id).first()
         if not survey:
             raise KeyError(f"Survey with id {survey_id} not found.")
         return self._map_to_model(survey)
 
-    def update_survey(self, survey: SurveySchema) -> SurveySchema:
+    def update_survey(self, survey: Survey) -> Survey:
         try:
             db_survey = self.db.query(DBSurvey).filter(DBSurvey.uuid == survey.uuid).first()
             for field, value in survey.model_dump().items():

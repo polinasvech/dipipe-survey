@@ -3,8 +3,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.schemas.syrvey_schema import Survey
-from app_manager.app.models.survey_model import Survey as SurveyModel,GetSurveyRequest
+from app_manager.app.models.survey_model import Survey as Survey,GetSurveyRequest,CreateSurveyRequest
 from app_manager.app.services.survey_service import SurveyService
 from app_manager.app.services.question_service import QuestionService
 
@@ -26,7 +25,7 @@ def get_survey_by_id(
 ) -> GetSurveyRequest:
     try:
         survey = survey_service.get_survey_by_id(survey_id)
-        questions = question_service.get_question_by_id(survey_id)
+        questions = question_service.get_questions_by_survey_id(survey_id)
         return GetSurveyRequest(id = survey_id, name = survey.name, questions = questions)
     except KeyError:
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
@@ -34,14 +33,11 @@ def get_survey_by_id(
 
 @survey_router.post("/create_survey")
 def create_survey(
-    name: str,
-    start_date: datetime,
-    end_date: datetime,
-    manager_id: UUID,
+    request: CreateSurveyRequest,
     survey_service: SurveyService = Depends(SurveyService),
 ) -> Survey:
     try:
-        return survey_service.create_survey(name, start_date, end_date, manager_id)
+        return survey_service.create_survey(request.name, request.start_date, request.end_date, request.manager_id)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 
