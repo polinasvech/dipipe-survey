@@ -1,7 +1,7 @@
 import os
 
 import requests
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
@@ -25,6 +25,12 @@ def api_survey(uuid):
         return jsonify({"status": "ok", "frontend_response": data})
     except requests.exceptions.RequestException as e:
         return jsonify({"status": "error", "message": str(e)})
+@app.route('/api/survey/create_survey', methods=['POST'])
+def create_survey():
+    data = request.get_json()
+    print('Received survey submission:')
+    print(data)
+    return jsonify({"status": "ok", "message": "Survey received"})
 @app.route('/get_survey_by_id/<uuid>', methods=['GET'])
 def get_survey_by_id(uuid):
     survey = {
