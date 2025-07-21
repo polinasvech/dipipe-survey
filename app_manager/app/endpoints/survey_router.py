@@ -4,7 +4,9 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 
 from app_manager.app.schemas.syrvey_schema import Survey
+from app_manager.app.models.survey_model import Survey as SurveyModel,GetSurveyRequest
 from app_manager.app.services.survey_service import SurveyService
+from app_manager.app.services.question_service import QuestionService
 
 survey_router = APIRouter(prefix="/surveys", tags=["Surveys"])
 
@@ -20,9 +22,12 @@ def get_all_surveys(
 def get_survey_by_id(
     survey_id: UUID,
     survey_service: SurveyService = Depends(SurveyService),
-) -> Survey:
+    question_service: QuestionService = Depends(QuestionService)
+) -> GetSurveyRequest:
     try:
-        return survey_service.get_survey_by_id(survey_id)
+        survey = survey_service.get_survey_by_id(survey_id)
+        questions = question_service.get_question_by_id(survey_id)
+        return GetSurveyRequest(id = survey_id, name = survey.name, questions = questions)
     except KeyError:
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
 
@@ -66,3 +71,4 @@ def delete_survey(
         return {"detail": "Survey deleted successfully"}
     except KeyError:
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
+

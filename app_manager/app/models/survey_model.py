@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import List
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
@@ -15,3 +16,9 @@ class CreateSurveyRequest(BaseModel):
     start_date: datetime
     end_date: datetime
     manager_id: UUID | None = None
+
+
+class GetSurveyRequest(BaseModel):
+    id: UUID
+    title: str
+    questions: List[dict]

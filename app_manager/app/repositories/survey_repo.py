@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app_manager.app.schemas.base_schema import get_db
 from app_manager.app.schemas.syrvey_schema import Survey as DBSurvey
-from app_manager.app.models.syrvey_model import Survey as SurveySchema, CreateSurveyRequest
+from app_manager.app.models.survey_model import Survey as SurveySchema, CreateSurveyRequest
 
 
 class SurveyRepo:

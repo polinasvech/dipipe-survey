@@ -42,6 +42,10 @@ class QuestionRepo:
             raise KeyError(f"Question with id {question_id} not found.")
         return self._map_to_model(question)
 
+    def get_questions_by_survey_id(self, survey_id: UUID) -> List[QuestionSchema]:
+        return [self._map_to_model(s) for s in self.db.query(DBQuestion).filter(DBQuestion.survey_id == survey_id).all()]
+
+
     def update_question(self, question: QuestionSchema) -> QuestionSchema:
         try:
             db_question = self.db.query(DBQuestion).filter(DBQuestion.uuid == question.uuid).first()
