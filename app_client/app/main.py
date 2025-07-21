@@ -16,14 +16,48 @@ def survey():
 
 @app.route('/api/survey')
 def api_survey():
-    # Example survey data with new type names and a rating (int) question
+    # Example survey data with new structure
     survey = {
+        "title": "Customer Feedback Survey",
+        "id": "survey001",
         "questions": [
-            {"text": "What is your name? (ИНН или название компании)", "type": "tin"},
-            {"text": "What is your favorite programming language?", "type": "str"},
-            {"text": "How would you rate our service?", "type": "int", "min": 0, "max": 10},
-            {"text": "Do you like our product?", "type": "bool"},
-            {"text": "When does the survey end?", "type": "datetime"}
+            {
+                "id": "q1",
+                "text": "What is your name? (ИНН или название компании)",
+                "type": "tin",
+                "required": True,
+                "ansvers": []
+            },
+            {
+                "id": "q2",
+                "text": "What is your favorite programming language?",
+                "type": "str",
+                "required": False,
+                "ansvers": []
+            },
+            {
+                "id": "q3",
+                "text": "How would you rate our service?",
+                "type": "int",
+                "required": True,
+                "ansvers": [],
+                "min": 0,
+                "max": 10
+            },
+            {
+                "id": "q4",
+                "text": "Do you like our product?",
+                "type": "bool",
+                "required": True,
+                "ansvers": ["yes", "no"]
+            },
+            {
+                "id": "q5",
+                "text": "When does the survey end?",
+                "type": "datetime",
+                "required": False,
+                "ansvers": []
+            }
         ]
     }
     return jsonify(survey)
