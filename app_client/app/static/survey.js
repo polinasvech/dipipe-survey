@@ -22,7 +22,10 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
         });
 
         // Для отслеживания, трогал ли пользователь ползунок (int/rating)
-        const interactedSliders = {};
+        let interactedSliders = {};
+        try {
+            interactedSliders = JSON.parse(localStorage.getItem(storageKey + '_interacted')) || {};
+        } catch (e) { interactedSliders = {}; }
 
         // Set survey title if present
         if (data.title) {
@@ -91,6 +94,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                     valueLabel.textContent = input.value;
                     saveAnswer(qid, input.value);
                     interactedSliders[qid] = true;
+                    localStorage.setItem(storageKey + '_interacted', JSON.stringify(interactedSliders));
                     updateProgressBar();
                     if (q.required) {
                         if (interactedSliders[qid]) {
@@ -216,6 +220,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             } catch (e) { answers = {}; }
             // Validate required questions
             let allValid = true;
+            let firstInvalidDiv = null;
             Object.entries(requiredQuestions).forEach(([qid, { label, inputRef, div }]) => {
                 let answered = false;
                 if (Array.isArray(inputRef)) {
@@ -228,12 +233,15 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 if (!answered) {
                     allValid = false;
                     div.classList.add('border', 'border-danger');
+                    if (!firstInvalidDiv) firstInvalidDiv = div;
                 } else {
                     div.classList.remove('border', 'border-danger');
                 }
             });
             if (!allValid) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (firstInvalidDiv) {
+                    firstInvalidDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 // Show important image for 3 seconds
                 const img = document.getElementById('important-img');
                 if (img) {
