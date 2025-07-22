@@ -34,7 +34,7 @@ async def calculate(
 
 
 @router.get("/dashboard/{survey_id}")
-async def calculate(
+async def dashboard(
     survey_id: UUID,
     survey_service: SurveyService = Depends(SurveyService),
     client_service: ClientService = Depends(ClientService),

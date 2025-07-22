@@ -1,6 +1,7 @@
 import re
 import sys
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
 
 import pandas as pd
@@ -33,7 +34,7 @@ class InitialParser:
         match = pattern.match(question_text)
         if match:
             main_text = match.group(1).strip()
-            # Если есть colon (or extra spaces and then colon), убираем
+            # Если есть colon (or extra spaces then colon), убираем
             if main_text.endswith(":"):
                 main_text = main_text[:-1].rstrip()
             suffix = match.group(2)  # Could be either "Оценка" or "Важность критерия" or None
@@ -74,7 +75,7 @@ class InitialParser:
             question_map[i] = question_uid
 
         for i, row in df.iterrows():
-            # Insert client record.
+            # create client
             tin = int(row[0])
             preferences = row[1].strip()
             division = row[2].strip()
@@ -84,11 +85,10 @@ class InitialParser:
                 print("Could not insert client for row:", row)
                 continue
 
-            # For each question column (starting at column index 4), insert answer.
+            # For each question column (starting at column index 4), insert answer
             for idx, answer in enumerate(row[4:], start=4):
                 question_id = question_map[idx]
                 if question_id is None:
-                    # Skip if no valid question record was created.
                     continue
 
                 self.insert_answer(conn, client_id, main_survey_id, question_id, answer)
@@ -103,7 +103,6 @@ class InitialParser:
         """
         cur = conn.cursor()
         now = datetime.now()
-        # end_date: 30 days later
         end_date = now.replace(day=now.day + 30) if now.day <= 1 else now
 
         insert_query = """
@@ -125,7 +124,7 @@ class InitialParser:
             cur.close()
 
     @staticmethod
-    def insert_category(conn, category_name) -> UUID:
+    def insert_category(conn, category_name) -> Optional[UUID]:
         """
         Создание "main" опроса (from now to now + 30 days)
         """
@@ -139,12 +138,12 @@ class InitialParser:
         except Exception as e:
             conn.rollback()
             print("Error creating category:", e)
-            sys.exit(1)
+            return None
         finally:
             cur.close()
 
     @classmethod
-    def insert_question(cls, conn, survey_id, question_text, category_id):
+    def insert_question(cls, conn, survey_id, question_text, category_id) -> Optional[UUID]:
         """Добавляет запись в questions и возвращает id"""
         main_text = cls.clear_question_text(question_text)
         cur = conn.cursor()
@@ -174,12 +173,8 @@ class InitialParser:
             cur.close()
 
     @staticmethod
-    def insert_client(conn, tin, preferences, division, ca_type):
-        """
-        Insert a record into clients table.
-        Assumes the table definition:
-          clients(uuid, tin, preferences, division, ca_type)
-        """
+    def insert_client(conn, tin, preferences, division, ca_type) -> Optional[UUID]:
+        """Добавляет запись в таблицу clients и возвращает uuid"""
         cur = conn.cursor()
         insert_query = """
             INSERT INTO clients (tin, preferences, division, ca_type)
@@ -200,15 +195,10 @@ class InitialParser:
 
     @staticmethod
     def insert_answer(conn, client_id, survey_id, question_id, ans_val):
-        """
-        Insert a record into answers table.
-        If ans_val can be interpreted as an integer, store it in answer_int;
-        otherwise store it as answer_text.
-        NOTE: The table's primary key should ideally include question_id
-              because one client can answer more than one question.
-        """
+        """Добавляет запись в таблицу answers"""
         cur = conn.cursor()
-        # Try converting the answer to an integer.
+
+        # пытаемся перевести в int
         answer_int = None
         answer_text = None
         try:

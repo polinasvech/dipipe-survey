@@ -1,11 +1,10 @@
-import json
 import logging
 
 import requests
 
 # from asgiref.wsgi import WsgiToAsgi
 from config.settings import settings
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for, Response
+from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
 
 logging.basicConfig(
     level=logging.INFO,
@@ -65,8 +64,8 @@ def api_survey(uuid):
 @app.route("/api/survey/create_survey", methods=["POST"])
 def create_survey():
     data = request.get_json()
-    print("Received survey submission:")
-    print(data)
+    logger.info("Received survey submission:")
+    logger.info(data)
     return jsonify({"status": "ok", "message": "Survey received"})
 
 

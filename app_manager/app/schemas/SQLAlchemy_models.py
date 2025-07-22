@@ -1,8 +1,6 @@
-from models.question_model import Types
-from schemas.base_schema import Base  # Assuming you have a Base class for SQLAlchemy
+from schemas.base_schema import Base
 from sqlalchemy import UUID as SQLUUID
 from sqlalchemy import Boolean, Column
-from sqlalchemy import Enum as SQLEnum
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -27,7 +25,7 @@ class DBQuestion(Base):
     survey_id = Column(SQLUUID)
     category_id = Column(SQLUUID)
     text = Column(String)
-    type = Column(SQLEnum(Types))
+    type = Column(String)
     required = Column(Boolean)
 
     answers = relationship("DBAnswer", back_populates="question")

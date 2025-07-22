@@ -1,7 +1,6 @@
-from models.question_model import Types  # если Enum Types объявлен в question_schema.py
+# from models.question_model import QuestionType  # если Enum Types объявлен в question_schema.py
 from schemas.base_schema import Base
 from sqlalchemy import Boolean, Column
-from sqlalchemy import Enum as SQLAEnum
 from sqlalchemy import ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -14,7 +13,7 @@ class Question(Base):
     survey_id = Column(UUID(as_uuid=True), ForeignKey("surveys.uuid", ondelete="CASCADE"), nullable=False)
     category_id = Column(UUID(as_uuid=True), ForeignKey("categories.uuid", ondelete="CASCADE"), nullable=False)
     text = Column(Text, nullable=False)
-    type = Column(SQLAEnum(Types), nullable=False)
+    type = Column(Text, nullable=False)
     required = Column(Boolean, nullable=False, default=False)
 
     # Add relationship to Answer

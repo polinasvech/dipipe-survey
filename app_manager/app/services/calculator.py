@@ -103,7 +103,7 @@ class Calculator:
         total_respondents = len(df)  # общее кол-во ответивших
         stats = {}
 
-        # Define ranges: critics (0-6), neutrals (7-8), promoters (9-10)
+        # критики (0-6), нейтралы (7-8), сторонники (9-10)
         for column in df.columns:
             critics = df[(df[column] >= 0) & (df[column] <= 6)][column].count()
             neutrals = df[(df[column] >= 7) & (df[column] <= 8)][column].count()

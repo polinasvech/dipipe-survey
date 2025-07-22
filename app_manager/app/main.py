@@ -9,7 +9,6 @@ from endpoints.manager_router import manager_router
 from endpoints.question_router import question_router
 from endpoints.survey_router import survey_router
 from endpoints.template_router import template_router
-
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from schemas import (

@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
 
-class Types(str, Enum):
+class QuestionType(str, Enum):
     NUMERIC = "NUMERIC"
     STRING = "STRING"
 
@@ -15,7 +15,7 @@ class Question(BaseModel):
     survey_id: UUID
     category_id: UUID
     text: str
-    type: Types
+    type: QuestionType
     required: bool
 
 
@@ -23,5 +23,5 @@ class CreateQuestionRequest(BaseModel):
     survey_id: UUID
     category_id: UUID
     text: str
-    type: Types
+    type: QuestionType
     required: bool
