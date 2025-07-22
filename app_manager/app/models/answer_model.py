@@ -7,7 +7,7 @@ from models.question_model import Question
 
 class Answer(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    uuid:UUID
+    uuid: UUID
     question_id: UUID
     client_id: UUID
     survey_id: UUID

@@ -8,5 +8,6 @@ class Category(BaseModel):
     uuid: UUID
     text: str
 
+
 class CreateCategoryRequest(BaseModel):
     text: str

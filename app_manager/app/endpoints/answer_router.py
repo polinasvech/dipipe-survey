@@ -14,7 +14,9 @@ def create_answer(
     answer_service: AnswerService = Depends(AnswerService),
 ) -> Answer:
     try:
-        return answer_service.create_answer(request.client_id, request.survey_id,request.question_id, request.answer_int, request.answer_text)
+        return answer_service.create_answer(
+            request.client_id, request.survey_id, request.question_id, request.answer_int, request.answer_text
+        )
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

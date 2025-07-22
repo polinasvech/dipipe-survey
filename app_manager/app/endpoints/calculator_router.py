@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 @router.post("/")
 async def calculate(
-        request: CalculatorRequest,
-        survey_service: SurveyService = Depends(SurveyService),
+    request: CalculatorRequest,
+    survey_service: SurveyService = Depends(SurveyService),
 ) -> CalculatorResponse:
     try:
         survey_service.get_survey_by_id(request.survey_uuid)
@@ -23,5 +23,6 @@ async def calculate(
     calculator = Calculator(survey_id=request.survey_uuid)
     metrics = calculator.calculate_correlations()
     nps, avg_total = calculator.calculate_nps()
+    print(nps)
     nps_response = NpsResponse(average_total=avg_total, nps=nps)
     return CalculatorResponse(survey_uuid=request.survey_uuid, metrics=metrics, nps=nps_response)

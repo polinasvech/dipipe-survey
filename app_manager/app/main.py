@@ -8,8 +8,9 @@ from endpoints.manager_router import manager_router
 from endpoints.question_router import question_router
 from endpoints.survey_router import survey_router
 from endpoints.template_router import template_router
-from endpoints.client_router import client_router
-from endpoints.admin_router import admin_router
+
+# from endpoints.client_router import client_router
+# from endpoints.admin_router import admin_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from schemas import answer_schema, client_schema, manager_schema, question_schema, syrvey_schema, template_schema
@@ -17,11 +18,8 @@ from schemas.base_schema import engine
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),  # Вывод в консоль
-        logging.FileHandler('app.log')  # Запись в файл
-    ]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(), logging.FileHandler("app.log")],  # Вывод в консоль  # Запись в файл
 )
 
 logger = logging.getLogger(__name__)
@@ -52,6 +50,5 @@ app.include_router(question_router)
 app.include_router(survey_router)
 app.include_router(template_router)
 app.include_router(calculator_router)
-app.include_router(client_router)
-app.include_router(admin_router)
-
+# app.include_router(client_router)
+# app.include_router(admin_router)
