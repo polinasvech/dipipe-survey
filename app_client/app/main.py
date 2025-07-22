@@ -1,10 +1,20 @@
 import requests
+from asgiref.wsgi import WsgiToAsgi
 from config.settings import settings
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(), logging.FileHandler("app.log")],  # Вывод в консоль  # Запись в файл
+)
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
 app.config["SECRET_KEY"] = "kalanod"
+asgi_app = WsgiToAsgi(app)
 
 
 # --- AUTH ---
@@ -41,12 +51,13 @@ def survey(uuid):
 @app.route("/api/survey/<uuid>", methods=["GET"])
 def api_survey(uuid):
     try:
-        # response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
-        response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/get_survey_by_id/{uuid}")
-        # response = requests.get(f"http://localhost:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
+        # response = requests.get(f"http://0.0.0.0:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
+        response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/calculator/dashboard/{uuid}")
+        logger.error(str(response.json()))
         data = response.json()
         return jsonify({"status": "ok", "frontend_response": data})
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
+        logger.error(str(e))
         return jsonify({"status": "error", "message": str(e)})
 
 

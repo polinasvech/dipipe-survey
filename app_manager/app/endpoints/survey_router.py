@@ -3,8 +3,10 @@ from datetime import datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
+from models.question_model import Question
 from models.survey_model import CreateSurveyRequest
 from models.survey_model import Survey
+from services.question_service import QuestionService
 from services.survey_service import SurveyService
 
 survey_router = APIRouter(prefix="/surveys", tags=["Surveys"])

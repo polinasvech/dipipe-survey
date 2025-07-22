@@ -1,17 +1,22 @@
 import logging
-from typing import List
-from uuid import uuid4
+from typing import List, Optional
+from uuid import UUID, uuid4
 
 import pandas as pd
-from fastapi import APIRouter, Depends, File, UploadFile
-from models.answer_model import Answer
-from models.dto_models import AnswerWithQuestion, QuestionBase, StatDTO, SurveyDTO
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from models.answer_model import Answer, CreateAnswerRequest
+from models.dto_models import AnswerBase, AnswerWithQuestion, QuestionBase, StatDTO, SurveyDTO
+from models.question_model import Question
 from models.survey_model import Survey as SurveyModel
 from schemas.answer_schema import Answer
 from schemas.base_schema import get_db
 from schemas.category_schema import Category
+from schemas.question_schema import Question
+from schemas.syrvey_schema import Survey
+from services.answer_service import AnswerService
 from services.question_service import QuestionService
 from services.survey_service import SurveyService
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 admin_router = APIRouter(prefix="/admin", tags=["Admin"])
