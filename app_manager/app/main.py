@@ -38,3 +38,11 @@ app.include_router(manager_router)
 app.include_router(question_router)
 app.include_router(survey_router)
 app.include_router(template_router)
+
+
+
+from scripts.import_xlsx import InitialParser
+
+if __name__ == "__main__":
+    parser = InitialParser()
+    parser.run()
