@@ -1,8 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Text, Boolean
+from schemas.base_schema import Base
+from sqlalchemy import Boolean, Column, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
-from schemas.base_schema import Base
 
 
 class Question(Base):
@@ -21,4 +20,3 @@ class Question(Base):
     # Add relationship to Survey and Category if needed
     # survey = relationship("Survey", back_populates="question")  # TODO
     # category = relationship("Category", back_populates="question")  # TODO
-

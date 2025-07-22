@@ -1,9 +1,9 @@
 from typing import Optional
 from uuid import UUID
 
+from models.question_model import Question
 from pydantic import BaseModel, ConfigDict
 
-from models.question_model import Question
 
 class Answer(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -34,4 +34,4 @@ class AnswerRead(BaseModel):
     answer_text: Optional[str]
 
     class Config:
-        orm_mode = True 
+        orm_mode = True

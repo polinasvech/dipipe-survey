@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from schemas.calculator_schemas import BaseRequest, CalculatorResponse, NpsResponse, ClientsStatisticsResponse
-from services.calculator import Calculator
-from services.survey_service import SurveyService
-from services.client_service import ClientService
 import logging
 from collections import Counter
+
+from fastapi import APIRouter, Depends, HTTPException
+from schemas.calculator_schemas import BaseRequest, CalculatorResponse, ClientsStatisticsResponse, NpsResponse
+from services.calculator import Calculator
+from services.client_service import ClientService
+from services.survey_service import SurveyService
 
 router = APIRouter(prefix="/calculator", tags=["Calculator"])
 
@@ -44,7 +45,5 @@ async def calculate(
     preferences_counter = Counter(client.preferences for client in clients)
 
     return ClientsStatisticsResponse(
-        by_division=dict(division_counter),
-        by_type=dict(type_counter),
-        by_preferences=dict(preferences_counter)
+        by_division=dict(division_counter), by_type=dict(type_counter), by_preferences=dict(preferences_counter)
     )

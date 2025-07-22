@@ -1,53 +1,42 @@
 import logging
-from uuid import UUID
-from typing import Optional, List
+from typing import List, Optional
+from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
-from uuid import uuid4
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from models.answer_model import Answer, CreateAnswerRequest
+from models.dto_models import AnswerBase, AnswerWithQuestion, QuestionBase, StatDTO, SurveyDTO
+from models.question_model import Question
+from models.survey_model import Survey as SurveyModel
+from schemas.answer_schema import Answer
 from schemas.base_schema import get_db
 from schemas.category_schema import Category
-from models.answer_model import Answer,CreateAnswerRequest
-from models.question_model import Question
-from models.dto_models import SurveyDTO
+from schemas.question_schema import Question
 from schemas.syrvey_schema import Survey
-from models.survey_model import Survey as SurveyModel
 from services.answer_service import AnswerService
 from services.question_service import QuestionService
 from services.survey_service import SurveyService
-from schemas.answer_schema import Answer
-from schemas.question_schema import Question
-from models.dto_models import StatDTO,QuestionBase,AnswerWithQuestion,AnswerBase
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from uuid import UUID, uuid4
+from sqlalchemy.orm import Session
 
 admin_router = APIRouter(prefix="/admin", tags=["Admin"])
 logger = logging.getLogger(__name__)
 
-from sqlalchemy.orm import joinedload
-from sqlalchemy import select
 from uuid import UUID
+
 from fastapi import HTTPException
-
-
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 
 def get_stat_dto_by_survey_id(survey_id: UUID, db: Session) -> StatDTO:
     # Load answers with their questions
-    answers_db = db.scalars(
-        select(Answer)
-        .options(joinedload(Answer.question))
-        .where(Answer.survey_id == survey_id)
-    ).unique().all()
+    answers_db = (
+        db.scalars(select(Answer).options(joinedload(Answer.question)).where(Answer.survey_id == survey_id)).unique().all()
+    )
 
     if not answers_db:
-        raise HTTPException(
-            status_code=404,
-            detail=f"No answers found for survey with id {survey_id}"
-        )
+        raise HTTPException(status_code=404, detail=f"No answers found for survey with id {survey_id}")
 
     # Convert SQLAlchemy objects to Pydantic models
     answers = []
@@ -60,16 +49,11 @@ def get_stat_dto_by_survey_id(survey_id: UUID, db: Session) -> StatDTO:
             question_id=db_answer.question_id,
             answer_int=db_answer.answer_int,
             answer_text=db_answer.answer_text,
-            question=QuestionBase.model_validate(db_answer.question) if db_answer.question else None
+            question=QuestionBase.model_validate(db_answer.question) if db_answer.question else None,
         )
         answers.append(answer)
 
-    return StatDTO(
-        id=uuid4(),
-        survey_id=survey_id,
-        count=len(answers),
-        answers=answers
-    )
+    return StatDTO(id=uuid4(), survey_id=survey_id, count=len(answers), answers=answers)
 
 
 @admin_router.get("/get_stat/{survey_id}", response_model=StatDTO)
@@ -79,17 +63,19 @@ def get_stat_by_survey(survey_id: UUID, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Ответы не найдены")
     return stat
 
-@admin_router.get("/get_all_surveys",response_model=List[SurveyModel])
+
+@admin_router.get("/get_all_surveys", response_model=List[SurveyModel])
 def get_all_surveys(
     survey_service: SurveyService = Depends(SurveyService),
 ):
     return survey_service.get_all_surveys()
 
+
 @admin_router.get("/{survey_id}", response_model=SurveyDTO)
 def get_survey_by_id(
-        survey_id: UUID,
-        survey_service: SurveyService = Depends(SurveyService),
-        question_service: QuestionService = Depends(QuestionService),
+    survey_id: UUID,
+    survey_service: SurveyService = Depends(SurveyService),
+    question_service: QuestionService = Depends(QuestionService),
 ):
     try:
         logger.info(f"Fetching survey with ID: {survey_id}")
@@ -107,11 +93,7 @@ def get_survey_by_id(
         logger.info(f"Found {len(questions)} questions for survey")
 
         # 3. Формируем ответ
-        response = SurveyDTO(
-            id=survey_id,
-            title=survey.name,
-            questions=questions
-        )
+        response = SurveyDTO(id=survey_id, title=survey.name, questions=questions)
 
         return response
 
@@ -122,22 +104,21 @@ def get_survey_by_id(
         raise HTTPException(500, detail="Internal Server Error")
 
 
-
 @admin_router.post("/categories/import")
 async def import_categories(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    if not file.filename.endswith(('.xlsx', '.xls')):
+    if not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(status_code=400, detail="Файл должен быть Excel (.xlsx или .xls)")
 
     try:
         contents = await file.read()
         df = pd.read_excel(contents)
 
-        if 'text' not in df.columns:
+        if "text" not in df.columns:
             raise HTTPException(status_code=400, detail="Ожидается колонка 'text' в файле")
 
         categories = []
         for _, row in df.iterrows():
-            text = str(row['text']).strip()
+            text = str(row["text"]).strip()
             if text:
                 category = Category(uuid=uuid4(), text=text)
                 categories.append(category)
@@ -150,8 +131,3 @@ async def import_categories(file: UploadFile = File(...), db: Session = Depends(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Ошибка импорта: {str(e)}")
-
-
-
-
-

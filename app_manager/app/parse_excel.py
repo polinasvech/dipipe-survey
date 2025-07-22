@@ -1,13 +1,13 @@
 import re
 import sys
 from datetime import datetime
+from uuid import UUID
 
 import pandas as pd
 import psycopg2
 from config.settings import settings
-from models.question_model import QuestionType
 from helpers import load_json
-from uuid import UUID
+from models.question_model import QuestionType
 
 
 class InitialParser:

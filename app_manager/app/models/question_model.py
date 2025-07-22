@@ -1,7 +1,7 @@
+from enum import StrEnum
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
-from enum import StrEnum
 
 
 class QuestionType(StrEnum):

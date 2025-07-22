@@ -1,10 +1,9 @@
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from fastapi import Depends
-
-from schemas.client_schema import Client
 from repositories.client_repo import ClientRepo
+from schemas.client_schema import Client
 
 
 class ClientService:

@@ -1,4 +1,3 @@
-from helpers import load_json
 import sys
 from typing import Dict, Tuple
 from uuid import UUID
@@ -6,6 +5,7 @@ from uuid import UUID
 import pandas as pd
 import psycopg2
 from config.settings import settings
+from helpers import load_json
 
 
 class Calculator:

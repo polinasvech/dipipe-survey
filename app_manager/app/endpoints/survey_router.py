@@ -19,8 +19,8 @@ def get_all_surveys(
 
 @survey_router.get("/{survey_id}", response_model=Survey)
 def get_survey_by_id(
-        survey_id: UUID,
-        survey_service: SurveyService = Depends(SurveyService),
+    survey_id: UUID,
+    survey_service: SurveyService = Depends(SurveyService),
 ):
     try:
         return survey_service.get_survey_by_id(survey_id)

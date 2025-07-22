@@ -3,8 +3,6 @@ from sqlalchemy import Column, ForeignKey, Integer, PrimaryKeyConstraint, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from schemas.base_schema import Base
-
 
 class Answer(Base):
     __tablename__ = "answers"
@@ -16,8 +14,4 @@ class Answer(Base):
     answer_int = Column(Integer)
     answer_text = Column(Text)
 
-    question = relationship(
-        "Question",
-        primaryjoin="Answer.question_id == Question.uuid",
-        back_populates="answers"
-    )
+    question = relationship("Question", primaryjoin="Answer.question_id == Question.uuid", back_populates="answers")
