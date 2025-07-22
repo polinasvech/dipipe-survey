@@ -20,7 +20,9 @@ class NpsSchema(BaseModel):
     neutral: int
     critics: int
     promoters_percent: float
+    neutral_percent: float
     critics_percent: float
+    neutral_percent: float
     nps_val: float = Field(..., description="(% Промоутеры - % Критики)")
 
 
