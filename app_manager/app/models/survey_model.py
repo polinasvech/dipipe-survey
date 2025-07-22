@@ -16,4 +16,4 @@ class CreateSurveyRequest(BaseModel):
     name: str
     start_date: datetime
     end_date: datetime
-    manager_id: UUID | None = None
+    manager_id: Optional[UUID] = None
