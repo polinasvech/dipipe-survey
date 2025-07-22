@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
-from app_manager.app.models.question_model import Question
+from models.question_model import Question
 
 class SurveyDTO(BaseModel):
     id: UUID

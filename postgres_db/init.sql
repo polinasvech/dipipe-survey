@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS questions (
         ON DELETE CASCADE
 );
 
-CREATE TABLE answers (
+CREATE TABLE IF NOT EXISTS answers (
     uuid   uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     client_id   uuid NOT NULL,
     survey_id   uuid NOT NULL,
