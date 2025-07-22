@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field, RootModel
 
 
-class CalculatorRequest(BaseModel):
+class BaseRequest(BaseModel):
     survey_uuid: UUID
 
 
@@ -20,7 +20,9 @@ class NpsSchema(BaseModel):
     neutral: int
     critics: int
     promoters_percent: float
+    neutral_percent: float
     critics_percent: float
+    neutral_percent: float
     nps_val: float = Field(..., description="(% Промоутеры - % Критики)")
 
 
@@ -33,3 +35,9 @@ class CalculatorResponse(BaseModel):
     survey_uuid: UUID
     metrics: Dict[str, MetricValues]
     nps: NpsResponse
+
+
+class ClientsStatisticsResponse(BaseModel):
+    by_division: Dict[str, int]
+    by_type: Dict[str, int]
+    by_preferences: Dict[str, int]

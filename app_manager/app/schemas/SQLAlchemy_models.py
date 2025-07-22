@@ -8,13 +8,14 @@ class DBAnswer(Base):
     __tablename__ = "answers"
 
     uuid = Column(SQLUUID, primary_key=True, index=True)
-    question_id = Column(SQLUUID, ForeignKey('questions.uuid'))
+    question_id = Column(SQLUUID, ForeignKey("questions.uuid"))
     client_id = Column(SQLUUID)
     survey_id = Column(SQLUUID)
     answer_int = Column(Integer, nullable=True)
     answer_text = Column(String, nullable=True)
 
     question = relationship("DBQuestion", back_populates="answers")
+
 
 class DBQuestion(Base):
     __tablename__ = "questions"

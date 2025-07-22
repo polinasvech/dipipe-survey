@@ -14,6 +14,7 @@ from models.survey_model import CreateSurveyRequest
 
 from models.survey_model import Survey as Survey
 from services.question_service import QuestionService
+from models.survey_model import CreateSurveyRequest, Survey
 from services.survey_service import SurveyService
 
 survey_router = APIRouter(prefix="/surveys", tags=["Surveys"])
@@ -29,8 +30,8 @@ def get_all_surveys(
 
 @survey_router.get("/{survey_id}", response_model=Survey)
 def get_survey_by_id(
-        survey_id: UUID,
-        survey_service: SurveyService = Depends(SurveyService),
+    survey_id: UUID,
+    survey_service: SurveyService = Depends(SurveyService),
 ):
     try:
         return survey_service.get_survey_by_id(survey_id)

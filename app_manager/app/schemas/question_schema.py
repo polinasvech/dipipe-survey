@@ -6,7 +6,7 @@ from schemas.base_schema import Base
 from models.question_model import Types  # если Enum Types объявлен в question_schema.py
 
 class Question(Base):
-    __tablename__ = 'questions'
+    __tablename__ = "questions"
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, index=True, unique=True, nullable=False)
     survey_id = Column(UUID(as_uuid=True), ForeignKey('surveys.uuid', ondelete='CASCADE'), nullable=False)

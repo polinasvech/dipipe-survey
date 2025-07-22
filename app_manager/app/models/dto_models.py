@@ -1,10 +1,9 @@
 from enum import Enum
-from uuid import UUID
 from typing import List, Optional
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict
+from uuid import UUID
 
 from models.question_model import Question
+from pydantic import BaseModel, ConfigDict
 
 class SurveyDTO(BaseModel):
     id: UUID
