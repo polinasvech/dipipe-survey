@@ -7,4 +7,41 @@
     font-size: 1.1em;
     border-radius: 8px;
     padding: 8px 12px;
+}
+.data-container {
+    margin-top: 32px;
+    width: 100%;
+}
+.admin-block {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    margin-bottom: 32px;
+    min-height: 500px;
+    width: 100%;
+}
+.admin-diagram {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 500px;
+    background: #e3f2fd;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+.admin-diagram.color1 { background: #e3f2fd; }
+.admin-diagram.color2 { background: #fce4ec; }
+.admin-diagram.color3 { background: #e8f5e9; }
+.admin-diagram.color4 { background: #fff3e0; }
+.admin-diagram.color5 { background: #ede7f6; }
+.admin-diagram-title {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-align: center;
 } 

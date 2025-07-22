@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "kalanod"
 
+
 # --- AUTH ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -21,34 +22,42 @@ def login():
             error = 'Неверный логин или пароль'
     return render_template('login.html', error=error)
 
+
 @app.route('/logout')
 def logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('login'))
 
+
 @app.route('/')
 def hello():
     return 'Hello, Flask!'
+
 
 @app.route('/survey/<uuid>')
 def survey(uuid):
     return render_template('survey.html')
 
+
 @app.route('/api/survey/<uuid>', methods=['GET'])
 def api_survey(uuid):
     try:
-        #response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
+        # response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
         response = requests.get(f"http://localhost:80/get_survey_by_id/{uuid}")
         data = response.json()
         return jsonify({"status": "ok", "frontend_response": data})
     except requests.exceptions.RequestException as e:
         return jsonify({"status": "error", "message": str(e)})
+
+
 @app.route('/api/survey/create_survey', methods=['POST'])
 def create_survey():
     data = request.get_json()
     print('Received survey submission:')
     print(data)
     return jsonify({"status": "ok", "message": "Survey received"})
+
+
 @app.route('/get_survey_by_id/<uuid>', methods=['GET'])
 def get_survey_by_id(uuid):
     survey = {
@@ -115,11 +124,13 @@ def get_survey_by_id(uuid):
     }
     return jsonify(survey)
 
+
 @app.route('/admin')
 def admin_panel():
     if not session.get('admin_logged_in'):
         return redirect(url_for('login'))
     return render_template('admin.html')
+
 
 @app.route('/admin/get_all_surveys')
 def get_all_surveys():
@@ -130,8 +141,81 @@ def get_all_surveys():
         "survey003": "Фидбек клиентов"
     })
 
+
+@app.route('/admin/get_stat<uuid>')
+def get_stat(uuid):
+    # Заглушка: возвращаем тестовые данные
+    return jsonify({
+        "uuid": "template-001",
+        "title": "Аналитика продаж",
+        "blocks": [
+            {
+                "diagrams": [
+                    {
+                        "uuid": "diagram-001",
+                        "title": "Продажи по категориям",
+                        "type": "round",
+                        "categories": [
+                            {"label": "Электроника", "value": 120000, "color": "#3498db"},
+                            {"label": "Одежда", "value": 85000, "color": "#3498db"},
+                            {"label": "Продукты", "value": 150000, "color": "#3498db"}
+                        ]
+                    },
+                    {
+                        "uuid": "diagram-002",
+                        "title": "Продажи по регионам",
+                        "type": "column",
+                        "categories": [
+                            {"label": "Москва", "value": 180000, "color": "#3498db"},
+                            {"label": "СПб", "value": 130000, "color": "#3498db"},
+                            {"label": "Казань", "value": 70000, "color": "#3498db"}
+                        ]
+                    }
+                ]
+            },
+            {
+                "diagrams": [
+                    {
+                        "uuid": "diagram-001",
+                        "title": "Продажи по категориям",
+                        "type": "round",
+                        "categories": [
+                            {"label": "Электроника", "value": 120000, "color": "#3498db"},
+                            {"label": "Одежда", "value": 85000, "color": "#3498db"},
+                            {"label": "Продукты", "value": 150000, "color": "#3498db"}
+                        ]
+                    },
+                    {
+                        "uuid": "diagram-002",
+                        "title": "Продажи по регионам",
+                        "type": "column",
+                        "categories": [
+                            {"label": "Москва", "value": 180000, "color": "#3498db"},
+                            {"label": "СПб", "value": 130000, "color": "#3498db"},
+                            {"label": "Казань", "value": 70000, "color": "#3498db"}
+                        ]
+                    },
+                    {
+                        "uuid": "diagram-002",
+                        "title": "Продажи по регионам",
+                        "type": "column",
+                        "categories": [
+                            {"label": "Москва", "value": 180000, "color": "#3498db"},
+                            {"label": "СПб", "value": 130000, "color": "#3498db"},
+                            {"label": "Казань", "value": 70000, "color": "#3498db"}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+    )
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)
