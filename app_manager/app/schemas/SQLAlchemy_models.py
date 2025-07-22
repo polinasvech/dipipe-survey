@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, UUID as SQLUUID, Enum as SQLEnum, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
-from app_manager.app.models.question_model import Types
-from app_manager.app.schemas.base_schema import Base  # Assuming you have a Base class for SQLAlchemy
+from models.question_model import Types
+from schemas.base_schema import Base  # Assuming you have a Base class for SQLAlchemy
 
 class DBAnswer(Base):
     __tablename__ = "answers"
