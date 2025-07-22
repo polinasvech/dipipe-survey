@@ -52,10 +52,18 @@ class ClientRepo:
     def update_client(self, client: Client) -> Client:
         try:
             db_client = self.db.query(DBClient).filter(DBClient.uuid == client.uuid).first()
-            for field, value in client.model_dump().items():
-                setattr(db_client, field, value)
+            if not db_client:
+                raise ValueError("Клиент с таким UUID не найден")
+
+            # Явное обновление полей
+            db_client.tin = client.tin
+            db_client.preferences = client.preferences
+            db_client.division = client.division
+            db_client.ca_type = client.ca_type
+
             self.db.commit()
             return self._map_to_model(db_client)
+
         except Exception:
             traceback.print_exc()
             self.db.rollback()

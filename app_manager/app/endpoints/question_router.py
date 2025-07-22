@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.models.question_model import Question,CreateQuestionRequest
+from app_manager.app.models.question_model import Question, CreateQuestionRequest, Types
 from app_manager.app.services.question_service import QuestionService
 
 question_router = APIRouter(prefix="/questions", tags=["Questions"])
@@ -40,7 +40,12 @@ def create_question(
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.create_question(request.survey_id, request.text)
+        return question_service.create_question(request.survey_id,
+                                                request.category_id,
+                                                request.text,
+                                                request.type,
+                                                request.required
+                                                )
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 
@@ -50,10 +55,16 @@ def update_question(
     question_id: UUID,
     survey_id: UUID,
     text: str,
+    category_id: UUID,
+    type:Types,
+    required:bool,
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.update_question(question_id, survey_id, text)
+        return question_service.update_question(question_id, survey_id,category_id, text,
+                                                type,
+                                                required
+                                                )
     except KeyError:
         raise HTTPException(404, detail=f"Question with id={question_id} not found")
 
