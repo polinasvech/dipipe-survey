@@ -1,6 +1,4 @@
 import logging
-
-import logging
 from collections import Counter
 from uuid import UUID, uuid4
 

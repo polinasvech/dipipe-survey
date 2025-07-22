@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -11,8 +10,6 @@ from endpoints.question_router import question_router
 from endpoints.survey_router import survey_router
 from endpoints.template_router import template_router
 
-# from endpoints.client_router import client_router
-# from endpoints.admin_router import admin_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from schemas import (

@@ -4,8 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from models.question_model import Question
-from models.survey_model import CreateSurveyRequest
-from models.survey_model import Survey
+from models.survey_model import CreateSurveyRequest, Survey
 from services.question_service import QuestionService
 from services.survey_service import SurveyService
 

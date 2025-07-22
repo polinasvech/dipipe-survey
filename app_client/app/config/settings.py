@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Общая конфигурация
 class GeneralConfig(BaseSettings):
+    SECRET_KEY: str
+
     CLIENT_HOST: str
     CLIENT_PORT: int
 

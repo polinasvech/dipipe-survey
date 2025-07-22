@@ -1,8 +1,11 @@
-import requests
-from asgiref.wsgi import WsgiToAsgi
-from config.settings import settings
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+import json
 import logging
+
+import requests
+
+# from asgiref.wsgi import WsgiToAsgi
+from config.settings import settings
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for, Response
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,8 +16,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "kalanod"
-asgi_app = WsgiToAsgi(app)
+app.config["SECRET_KEY"] = settings.SECRET_KEY
+# asgi_app = WsgiToAsgi(app)
 
 
 # --- AUTH ---
@@ -51,9 +54,7 @@ def survey(uuid):
 @app.route("/api/survey/<uuid>", methods=["GET"])
 def api_survey(uuid):
     try:
-        # response = requests.get(f"http://0.0.0.0:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
-        response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/calculator/dashboard/{uuid}")
-        logger.error(str(response.json()))
+        response = requests.get(f"http://localhost:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
         data = response.json()
         return jsonify({"status": "ok", "frontend_response": data})
     except Exception as e:
@@ -142,10 +143,22 @@ def get_all_surveys():
     return jsonify({"survey001": "Опрос по продукту", "survey002": "Оценка сервиса", "survey003": "Фидбек клиентов"})
 
 
+@app.route("/admin/get_stat/<uuid>")
+def get_stat(uuid):
+    try:
+        response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/calculator/dashboard/{uuid}")
+        data = response.text
+        return Response(data, content_type="application/json; charset=utf-8")  # фиксит енкодинг
+        # data = response.json()
+        # return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True, host="0.0.0.0", port=80)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=settings.CLIENT_PORT, threaded=True)
