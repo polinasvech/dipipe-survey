@@ -1,10 +1,9 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
-from app_manager.app.models.answer_model import Answer,CreateAnswerRequest
-from app_manager.app.services.answer_service import AnswerService
+from models.answer_model import Answer, CreateAnswerRequest
+from services.answer_service import AnswerService
 
 answer_router = APIRouter(prefix="/answers", tags=["Answers"])
 
@@ -15,7 +14,7 @@ def create_answer(
     answer_service: AnswerService = Depends(AnswerService),
 ) -> Answer:
     try:
-        return answer_service.create_answer(request.client_id, request.survey_id, request.answer_int, request.answer_text)
+        return answer_service.create_answer(request.client_id, request.survey_id,request.question_id, request.answer_int, request.answer_text)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

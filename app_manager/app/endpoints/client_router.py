@@ -1,8 +1,8 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.models.client_model import Client,CreateClientRequest
-from app_manager.app.services.client_service import ClientService
+from fastapi import APIRouter, Depends, HTTPException
+from models.client_model import Client, CreateClientRequest
+from services.client_service import ClientService
 
 client_router = APIRouter(prefix="/clients", tags=["Clients"])
 
@@ -14,10 +14,7 @@ def create_client(
 ) -> Client:
     try:
         return client_service.create_client(
-            tin=request.tin,
-            preferences=request.preferences,
-            division=request.division,
-            ca_type=request.ca_type
+            tin=request.tin, preferences=request.preferences, division=request.division, ca_type=request.ca_type
         )
     except Exception as e:
         raise HTTPException(400, detail=str(e))

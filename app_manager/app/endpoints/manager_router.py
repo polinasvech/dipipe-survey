@@ -1,8 +1,8 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.models.manager_model import Manager,CreateManagerRequest
-from app_manager.app.services.manager_service import ManagerService
+from fastapi import APIRouter, Depends, HTTPException
+from models.manager_model import CreateManagerRequest, Manager
+from services.manager_service import ManagerService
 
 manager_router = APIRouter(prefix="/managers", tags=["Managers"])
 

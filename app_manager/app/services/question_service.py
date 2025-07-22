@@ -1,10 +1,9 @@
-from uuid import UUID, uuid4
 from typing import List
+from uuid import UUID, uuid4
 
 from fastapi import Depends
-
-from app_manager.app.schemas.question_schema import Question
-from app_manager.app.repositories.question_repo import QuestionRepo
+from repositories.question_repo import QuestionRepo
+from schemas.question_schema import Question
 
 
 class QuestionService:

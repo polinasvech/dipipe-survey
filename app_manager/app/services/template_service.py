@@ -1,10 +1,9 @@
-from uuid import UUID, uuid4
 from typing import List, Optional
+from uuid import UUID, uuid4
 
 from fastapi import Depends
-
-from app_manager.app.schemas.template_schema import Template
-from app_manager.app.repositories.template_repo import TemplateRepo
+from repositories.template_repo import TemplateRepo
+from schemas.template_schema import Template
 
 
 class TemplateService:

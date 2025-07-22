@@ -1,12 +1,12 @@
-from uuid import UUID
 import traceback
-from typing import List
-from typing import Union
-from sqlalchemy.orm import Session
+from typing import List, Union
+from uuid import UUID
 
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.client_schema import Client as DBClient
-from app_manager.app.models.client_model import Client as Client, CreateClientRequest
+from models.client_model import Client as Client
+from models.client_model import CreateClientRequest
+from schemas.base_schema import get_db
+from schemas.client_schema import Client as DBClient
+from sqlalchemy.orm import Session
 
 
 class ClientRepo:
@@ -25,7 +25,7 @@ class ClientRepo:
             tin=client.tin,
             preferences=client.preferences,
             division=client.division,
-            ca_type=client.ca_type
+            ca_type=client.ca_type,
         )
 
     def create_client(self, client: Client) -> Client:
@@ -52,10 +52,18 @@ class ClientRepo:
     def update_client(self, client: Client) -> Client:
         try:
             db_client = self.db.query(DBClient).filter(DBClient.uuid == client.uuid).first()
-            for field, value in client.model_dump().items():
-                setattr(db_client, field, value)
+            if not db_client:
+                raise ValueError("Клиент с таким UUID не найден")
+
+            # Явное обновление полей
+            db_client.tin = client.tin
+            db_client.preferences = client.preferences
+            db_client.division = client.division
+            db_client.ca_type = client.ca_type
+
             self.db.commit()
             return self._map_to_model(db_client)
+
         except Exception:
             traceback.print_exc()
             self.db.rollback()

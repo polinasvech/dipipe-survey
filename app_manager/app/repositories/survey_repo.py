@@ -2,11 +2,11 @@ import traceback
 from typing import List
 from uuid import UUID
 
+from models.survey_model import CreateSurveyRequest
+from models.survey_model import Survey as Survey
+from schemas.base_schema import get_db
+from schemas.syrvey_schema import Survey as DBSurvey
 from sqlalchemy.orm import Session
-
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.syrvey_schema import Survey as DBSurvey
-from app_manager.app.models.survey_model import Survey as Survey, CreateSurveyRequest
 
 
 class SurveyRepo:
@@ -24,7 +24,7 @@ class SurveyRepo:
             name=survey.name,
             start_date=survey.start_date,
             end_date=survey.end_date,
-            manager_id=survey.manager_id
+            manager_id=survey.manager_id,
         )
 
     def create_survey(self, survey: Survey) -> Survey:

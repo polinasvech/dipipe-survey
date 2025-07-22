@@ -32,7 +32,7 @@ class GeneralConfig(BaseSettings):
 
     @property
     def DB_DNS(self):
-        return "f{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        return f"{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     @property
     def DB_DSN_SYNCH(self) -> str:
