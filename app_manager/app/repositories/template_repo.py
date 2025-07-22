@@ -16,7 +16,8 @@ class TemplateRepo:
         self.db = next(get_db())
 
     def _map_to_model(self, template: DBTemplate) -> Template:
-        return Template(**dict(template))
+        result = Template.from_orm(template)
+        return result
 
     def _map_to_schema(self, template: Template) -> DBTemplate:
         return DBTemplate(
