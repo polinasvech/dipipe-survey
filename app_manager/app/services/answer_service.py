@@ -10,8 +10,17 @@ class AnswerService:
     def __init__(self, answer_repo: AnswerRepo = Depends(AnswerRepo)) -> None:
         self.answer_repo = answer_repo
 
-    def create_answer(self, client_id: UUID, survey_id: UUID,question_id: UUID, answer_int: Optional[int], answer_text: Optional[str]) -> Answer:
-        answer = Answer(uuid = uuid4(),client_id=client_id, survey_id=survey_id, question_id =question_id, answer_int=answer_int, answer_text=answer_text)
+    def create_answer(
+        self, client_id: UUID, survey_id: UUID, question_id: UUID, answer_int: Optional[int], answer_text: Optional[str]
+    ) -> Answer:
+        answer = Answer(
+            uuid=uuid4(),
+            client_id=client_id,
+            survey_id=survey_id,
+            question_id=question_id,
+            answer_int=answer_int,
+            answer_text=answer_text,
+        )
         return self.answer_repo.create_answer(answer)
 
     def get_answers_by_survey(self, survey_id: UUID) -> List[Answer]:

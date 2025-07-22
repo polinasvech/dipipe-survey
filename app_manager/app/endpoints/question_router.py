@@ -42,12 +42,9 @@ def create_question(
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.create_question(request.survey_id,
-                                                request.category_id,
-                                                request.text,
-                                                request.type,
-                                                request.required
-                                                )
+        return question_service.create_question(
+            request.survey_id, request.category_id, request.text, request.type, request.required
+        )
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 

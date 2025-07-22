@@ -5,14 +5,17 @@ from uuid import UUID
 from models.question_model import Question
 from pydantic import BaseModel, ConfigDict
 
+
 class SurveyDTO(BaseModel):
     id: UUID
     title: str
     questions: List[Question]
 
+
 class QuestionType(str, Enum):
     NUMERIC = "NUMERIC"
     STRING = "STRING"
+
 
 class QuestionBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -23,6 +26,7 @@ class QuestionBase(BaseModel):
     type: QuestionType
     required: bool
 
+
 class AnswerBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     uuid: UUID
@@ -32,8 +36,10 @@ class AnswerBase(BaseModel):
     answer_int: Optional[int] = None
     answer_text: Optional[str] = None
 
+
 class AnswerWithQuestion(AnswerBase):
     question: Optional[QuestionBase] = None
+
 
 class StatDTO(BaseModel):
     id: UUID

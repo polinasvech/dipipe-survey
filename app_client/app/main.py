@@ -1,8 +1,6 @@
-import os
-
 import requests
-from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from config.settings import settings
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 
 app = Flask(__name__)
 
@@ -44,8 +42,8 @@ def survey(uuid):
 def api_survey(uuid):
     try:
         # response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
-        # response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/get_survey_by_id/{uuid}")
-        response = requests.get(f"http://localhost:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
+        response = requests.get(f"http://{settings.MANAGER_HOST}:{settings.MANAGER_PORT}/get_survey_by_id/{uuid}")
+        # response = requests.get(f"http://localhost:{settings.CLIENT_PORT}/get_survey_by_id/{uuid}")
         data = response.json()
         return jsonify({"status": "ok", "frontend_response": data})
     except requests.exceptions.RequestException as e:
@@ -138,5 +136,5 @@ def page_not_found(e):
     return render_template("404.html"), 404
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=80)
+# if __name__ == "__main__":
+#     app.run(debug=True, host="0.0.0.0", port=80)

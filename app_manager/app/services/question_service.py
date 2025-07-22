@@ -2,9 +2,10 @@ from typing import List
 from uuid import UUID, uuid4
 
 from fastapi import Depends
+from models.question_model import Types
 from repositories.question_repo import QuestionRepo
 from schemas.question_schema import Question
-from models.question_model import Types
+
 
 class QuestionService:
     def __init__(self, question_repo: QuestionRepo = Depends(QuestionRepo)) -> None:
@@ -19,21 +20,16 @@ class QuestionService:
     def get_questions_by_survey_id(self, survey_id: UUID) -> List[Question]:
         return self.question_repo.get_questions_by_survey_id(survey_id)
 
-    def create_question(self, survey_id: UUID,category_id:UUID, text: str,type:Types, required:bool) -> Question:
-        question = Question(uuid=uuid4(),
-                            survey_id=survey_id,
-                            category_id=category_id,
-                            text=text,
-                            type = type,
-                            required = required)
+    def create_question(self, survey_id: UUID, category_id: UUID, text: str, type: Types, required: bool) -> Question:
+        question = Question(
+            uuid=uuid4(), survey_id=survey_id, category_id=category_id, text=text, type=type, required=required
+        )
         return self.question_repo.create_question(question)
 
-    def update_question(self, uuid: UUID, survey_id: UUID, category_id:UUID, text: str,type:Types, required:bool) -> Question:
-        question = Question(uuid=uuid, survey_id=survey_id,
-                            category_id=category_id,
-                            text=text,
-                            type = type,
-                            required = required)
+    def update_question(
+        self, uuid: UUID, survey_id: UUID, category_id: UUID, text: str, type: Types, required: bool
+    ) -> Question:
+        question = Question(uuid=uuid, survey_id=survey_id, category_id=category_id, text=text, type=type, required=required)
         return self.question_repo.update_question(question)
 
     def delete_question(self, uuid: UUID) -> None:

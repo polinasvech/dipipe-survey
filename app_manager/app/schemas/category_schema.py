@@ -1,8 +1,7 @@
+from schemas.base_schema import Base
 from sqlalchemy import Column, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-
-from schemas.base_schema import Base
 
 
 class Category(Base):

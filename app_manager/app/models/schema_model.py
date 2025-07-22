@@ -1,12 +1,15 @@
-from uuid import UUID
-from pydantic import BaseModel, ConfigDict
 from typing import List
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict
+
 
 class DiagramType(str, Enum):
     ROUND = "round"
     COLUMN = "column"
     BAR = "bar"
     LINE = "line"
+
 
 class SchemaCategory(BaseModel):
     label: str

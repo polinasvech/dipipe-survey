@@ -2,11 +2,10 @@ import traceback
 from typing import List
 from uuid import UUID
 
-from sqlalchemy.orm import Session
-
+from models.question_model import Question as Question
 from schemas.base_schema import get_db
 from schemas.question_schema import Question as DBQuestion
-from models.question_model import Question as Question, CreateQuestionRequest
+from sqlalchemy.orm import Session
 
 
 class QuestionRepo:
@@ -25,7 +24,7 @@ class QuestionRepo:
             category_id=question.category_id,
             text=question.text,
             type=question.type,
-            required=question.required
+            required=question.required,
         )
 
     def create_question(self, question: Question) -> Question:
@@ -51,11 +50,8 @@ class QuestionRepo:
 
     def get_questions_by_survey_id(self, survey_id: UUID) -> List[Question]:
         survey_id_str = str(survey_id)
-        questions = self.db.query(DBQuestion) \
-            .filter(DBQuestion.survey_id == survey_id_str) \
-            .all()
+        questions = self.db.query(DBQuestion).filter(DBQuestion.survey_id == survey_id_str).all()
         return [self._map_to_model(q) for q in questions]
-
 
     def update_question(self, question: Question) -> Question:
         try:

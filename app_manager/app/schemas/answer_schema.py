@@ -1,10 +1,8 @@
-from uuid import uuid4
-
-from sqlalchemy import Column, Text, Integer, ForeignKey, PrimaryKeyConstraint
+from schemas.base_schema import Base
+from sqlalchemy import Column, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from schemas.base_schema import Base
 
 class Answer(Base):
     __tablename__ = "answers"
@@ -16,5 +14,5 @@ class Answer(Base):
     answer_int = Column(Integer)
     answer_text = Column(Text)
 
-   # Add relationship to Question
+    # Add relationship to Question
     question = relationship("Question", back_populates="answers")

@@ -2,7 +2,6 @@ import traceback
 from typing import List
 from uuid import UUID
 
-from models.template_model import CreateTemplateRequest
 from models.template_model import Template as Template
 from schemas.base_schema import get_db
 from schemas.template_schema import Template as DBTemplate

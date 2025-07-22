@@ -1,7 +1,7 @@
-from typing import Dict, List
+from typing import Dict
 from uuid import UUID
 
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, Field
 
 
 class BaseRequest(BaseModel):

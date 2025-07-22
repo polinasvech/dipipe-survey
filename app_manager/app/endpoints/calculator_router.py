@@ -1,10 +1,10 @@
 import logging
 from collections import Counter
-from uuid import uuid4, UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
 from helpers import generate_random_hex_color
-from schemas.calculator_schemas import BaseRequest, CalculatorResponse, ClientsStatisticsResponse, NpsResponse
+from schemas.calculator_schemas import BaseRequest, CalculatorResponse, NpsResponse
 from schemas.diagrams import Block, Category, Diagram, ReportTemplate
 from services.calculator import Calculator
 from services.client_service import ClientService
@@ -131,9 +131,7 @@ async def calculate(
     categories_cols = []
     categories_table = [[":)", ":|", ":("]]
     for i, key in enumerate(nps):
-        categories_cols.append(
-            Category(label=key, value=nps[key]["average"], color=main_colors[i])
-        )
+        categories_cols.append(Category(label=key, value=nps[key]["average"], color=main_colors[i]))
         categories_table.append(
             [str(nps[key]["promoters_percent"]), str(nps[key]["neutral_percent"]), str(nps[key]["critics_percent"])]
         )
@@ -153,4 +151,8 @@ async def calculate(
     )
     satisfaction_by_process_block = Block(diagrams=[columns_diagram, table_diagram])
 
-    return ReportTemplate(uuid=str(uuid4()), title="Статистика по клиентам", blocks=[clients_block, main_metrics_blocks, satisfaction_by_process_block])
+    return ReportTemplate(
+        uuid=str(uuid4()),
+        title="Статистика по клиентам",
+        blocks=[clients_block, main_metrics_blocks, satisfaction_by_process_block],
+    )

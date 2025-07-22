@@ -1,9 +1,9 @@
-from uuid import UUID
-from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict
+from typing import List, Optional
+from uuid import UUID
 
 from models.question_model import Question
+from pydantic import BaseModel, ConfigDict
 
 
 class Survey(BaseModel):
@@ -14,9 +14,9 @@ class Survey(BaseModel):
     end_date: datetime
     manager_id: Optional[UUID] = None
 
+
 class CreateSurveyRequest(BaseModel):
     name: str
     start_date: datetime
     end_date: datetime
     manager_id: Optional[UUID] = None
-
