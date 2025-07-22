@@ -42,7 +42,7 @@ def survey(uuid):
 @app.route('/api/survey/<uuid>', methods=['GET'])
 def api_survey(uuid):
     try:
-        # response = requests.get(f"http://app_manager:87/survey/get_survey_by_id/{uuid}")
+        # response = requests.get(f"http://app_manager:8002/survey/get_survey_by_id/{uuid}")
         response = requests.get(f"http://localhost:80/get_survey_by_id/{uuid}")
         data = response.json()
         return jsonify({"status": "ok", "frontend_response": data})
@@ -151,7 +151,7 @@ def get_all_surveys():
         }
     ])
     try:
-        response = requests.get(f"http://app_manager:87/admin/get_all_surveys/{uuid}")
+        response = requests.get(f"http://app_manager:8002/admin/get_all_surveys/{uuid}")
         data = response.json()
         return jsonify(data)
     except requests.exceptions.RequestException as e:
@@ -162,60 +162,147 @@ def get_all_surveys():
 def get_stat(uuid):
     # Заглушка: возвращаем тестовые данные
     return jsonify({
-        "uuid": "template-001",
-        "title": "Аналитика продаж",
-        "blocks": [
+  "uuid": "ea2c5cc8-9495-472e-a27e-840a7229281e",
+  "title": "Статистика по клиентам",
+  "blocks": [
+    {
+      "diagrams": [
+        {
+          "uuid": "5194a9fa-b24d-4312-90f0-a7e15ec953a5",
+          "title": "Удовлетворенность в разбивке по процессам",
+          "type": "column",
+          "categories": [
             {
-                "diagrams": [
-                    {
-                        "uuid": "diagram-001",
-                        "title": "Продажи по категориям",
-                        "type": "round",
-                        "categories": [
-                            {"label": "Электроника", "value": 120000, "color": "#3498db"},
-                            {"label": "Одежда", "value": 85000, "color": "#e67e22"},
-                            {"label": "Продукты", "value": 150000, "color": "#2ecc71"}
-                        ]
-                    },
-                    {
-                        "uuid": "diagram-002",
-                        "title": "Продажи по регионам",
-                        "type": "column",
-                        "categories": [
-                            {"label": "Москва", "value": 180000, "color": "#9b59b6"},
-                            {"label": "СПб", "value": 130000, "color": "#3498db"},
-                            {"label": "Казань", "value": 70000, "color": "#e74c3c"}
-                        ]
-                    }
-                ]
+              "label": "Удовлетворенность сроками предоставления коммерческого предложения",
+              "value": 8.662721893491124,
+              "color": "#AA0B5D"
             },
             {
-                "diagrams": [
-                    {
-                        "uuid": "diagram-003",
-                        "title": "Текстовая информация",
-                        "type": "text",
-                        "categories": [
-                            {"label": "Всего продаж: 350 000 руб.", "value": 0, "color": "#ffffff"}
-                        ]
-                    },
-                    {
-                        "uuid": "diagram-004",
-                        "title": "Фото руководителя",
-                        "type": "image",
-                        "categories": [
-                            {"label": "/static/tomka.jpg", "value": 0, "color": ""}
-                        ]
-                    }]}, {
-                "diagrams": [{
-                    "uuid": "diagram-002",
-                    "title": "Продажи по регионам",
-                    "type": "table",
-                    "categories": [
-                        ["", "value", "size"], ["apple", "1", "2"], ["melon", "4", "4"]
-                    ]}
-                ]}]
-    })
+              "label": "Оперативность выставления счета из наличия со складов ТД ТМК",
+              "value": 8.990099009900991,
+              "color": "#6384DD"
+            },
+            {
+              "label": "Оперативность выставления счета из наличия заводов ТМК",
+              "value": 8.71875,
+              "color": "#1C45F1"
+            },
+            {
+              "label": "Процесс согласования спецификации",
+              "value": 8.795698924731182,
+              "color": "#59A6E5"
+            },
+            {
+              "label": "Соблюдение сроков производства продукции",
+              "value": 8.45414847161572,
+              "color": "#93444C"
+            },
+            {
+              "label": "Качество бесшовных труб",
+              "value": 9.570532915360502,
+              "color": "#F36E10"
+            },
+            {
+              "label": "Качество сварных труб малого диаметра",
+              "value": 9.417218543046358,
+              "color": "#186290"
+            },
+            {
+              "label": "Процесс претензионной работы",
+              "value": 7.757281553398058,
+              "color": "#3A9A32"
+            },
+            {
+              "label": "Доступность информации в период работы исполнения заказа: готовность к отгрузке, изменение сроков поставки и т.д.",
+              "value": 9.00887573964497,
+              "color": "#916A53"
+            },
+            {
+              "label": "Работа вашего менеджера",
+              "value": 9.168639053254438,
+              "color": "#32F671"
+            },
+            {
+              "label": "Организация процесса самовывоза с заводов или складов ТМК",
+              "value": 8.20863309352518,
+              "color": "#536B81"
+            },
+            {
+              "label": "Услуга доставки продукции",
+              "value": 8.878048780487806,
+              "color": "#E583F5"
+            },
+            {
+              "label": "Качество консультаций операторов ЕКЦ",
+              "value": 8.869047619047619,
+              "color": "#78218E"
+            }
+          ]
+        }]},{
+      "diagrams": [
+        {
+          "uuid": "0a76a198-7ea0-431c-bdb1-39830facd6ed",
+          "title": "",
+          "type": "table",
+          "categories": [
+            [
+              ":)",
+              "0.7",
+              "0.76",
+              "0.72",
+              "0.74",
+              "0.59",
+              "0.89",
+              "0.83",
+              "0.57",
+              "0.76",
+              "0.82",
+              "0.59",
+              "0.75",
+              "0.8"
+            ],
+            [
+              ":|",
+              "0.7",
+              "0.76",
+              "0.72",
+              "0.74",
+              "0.59",
+              "0.89",
+              "0.83",
+              "0.57",
+              "0.76",
+              "0.82",
+              "0.59",
+              "0.75",
+              "0.8"
+            ],
+            [
+              ":(",
+              "0.13",
+              "0.09",
+              "0.13",
+              "0.11",
+              "0.17",
+              "0.03",
+              "0.04",
+              "0.25",
+              "0.1",
+              "0.09",
+              "0.19",
+              "0.13",
+              "0.11"
+            ]
+          ]
+        }]}
+      ]
+})
+    try:
+        response = requests.get(f"http://app_manager:8002/admin/get_stat/{uuid}")
+        data = response.json()
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 @app.errorhandler(404)
 def page_not_found(e):

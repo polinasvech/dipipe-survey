@@ -39,8 +39,9 @@ select.addEventListener('change', function() {
                         diagramDiv.appendChild(title);
                         // Chart.js canvas
                         const canvas = document.createElement('canvas');
-                        canvas.width = 400;
-                        canvas.height = 400;
+                        canvas.style.width = '100%';
+                        canvas.style.height = '100%';
+                        canvas.width = canvas.height = undefined; // Chart.js сам управляет размером
                         diagramDiv.appendChild(canvas);
                         if (diagram.type === 'round') {
                             new Chart(canvas, {
@@ -58,6 +59,46 @@ select.addEventListener('change', function() {
                                 }
                             });
                         } else if (diagram.type === 'column') {
+                            const labels = diagram.categories.map(cat => cat.label);
+                            const hasLongLabel = labels.some(l => l.length > 15);
+                            const dataset = {
+                                label: '',
+                                data: diagram.categories.map(cat => cat.value),
+                                backgroundColor: diagram.categories.map(cat => cat.color || '#3498db'),
+                            };
+                            new Chart(canvas, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [dataset]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display: hasLongLabel,
+                                            labels: hasLongLabel ? {
+                                                generateLabels: function(chart) {
+                                                    // Формируем легенду по label/цвету
+                                                    return chart.data.labels.map((label, i) => ({
+                                                        text: label,
+                                                        fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                                        strokeStyle: chart.data.datasets[0].backgroundColor[i],
+                                                        index: i
+                                                    }));
+                                                }
+                                            } : {}
+                                        }
+                                    },
+                                    scales: {
+                                        y: { beginAtZero: true },
+                                        x: {
+                                            ticks: { display: !hasLongLabel }
+                                        }
+                                    }
+                                }
+                            });
+                        } else if (diagram.type === 'bar') {
                             new Chart(canvas, {
                                 type: 'bar',
                                 data: {
@@ -69,9 +110,10 @@ select.addEventListener('change', function() {
                                     }]
                                 },
                                 options: {
+                                    indexAxis: 'y',
                                     responsive: true,
                                     plugins: { legend: { display: false } },
-                                    scales: { y: { beginAtZero: true } }
+                                    scales: { x: { beginAtZero: true } }
                                 }
                             });
                         } else if (diagram.type === 'text') {
