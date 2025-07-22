@@ -14,14 +14,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             saved = JSON.parse(localStorage.getItem(storageKey)) || {};
         } catch (e) { saved = {}; }
 
-        // Debug: print all survey_answers_* keys in localStorage
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith('survey_answers_')) {
-                console.log(key, localStorage.getItem(key));
-            }
-        });
-
-        // Для отслеживания, трогал ли пользователь ползунок (int/rating)
+        // Для отслеживания, трогал ли пользователь ползунок (rating)
         let interactedSliders = {};
         try {
             interactedSliders = JSON.parse(localStorage.getItem(storageKey + '_interacted')) || {};
@@ -49,12 +42,10 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 label.appendChild(star);
             }
             div.appendChild(label);
-            const qid = q.id;
-
-            // For validation, keep reference to input(s)
+            const qid = q.uuid;
             let inputRef = null;
 
-            if (q.type === 'str' || q.type === 'tin') {
+            if (q.type === 'text' || q.type === 'tin') {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.name = qid;
@@ -74,7 +65,7 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 });
                 div.appendChild(input);
                 inputRef = input;
-            } else if (q.type === 'int') {
+            } else if (q.type === 'rating') {
                 const sliderDiv = document.createElement('div');
                 sliderDiv.style.display = 'flex';
                 sliderDiv.style.alignItems = 'center';
@@ -84,8 +75,14 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 input.name = qid;
                 input.id = qid;
                 input.className = 'form-range';
-                input.min = q.min !== undefined ? q.min : 0;
-                input.max = q.max !== undefined ? q.max : 10;
+                // min/max из массива answers
+                if (Array.isArray(q.answers) && q.answers.length > 0) {
+                    input.min = Math.min(...q.answers);
+                    input.max = Math.max(...q.answers);
+                } else {
+                    input.min = 0;
+                    input.max = 10;
+                }
                 input.value = saved[qid] !== undefined ? saved[qid] : input.min;
                 const valueLabel = document.createElement('span');
                 valueLabel.textContent = input.value;
@@ -109,63 +106,40 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 div.appendChild(sliderDiv);
                 inputRef = input;
             } else if (q.type === 'bool') {
-                const yesDiv = document.createElement('div');
-                yesDiv.className = 'form-check form-check-inline';
-                const yesInput = document.createElement('input');
-                yesInput.type = 'radio';
-                yesInput.name = qid;
-                yesInput.value = 'yes';
-                yesInput.id = `${qid}_yes`;
-                yesInput.className = 'form-check-input';
-                const yesLabel = document.createElement('label');
-                yesLabel.textContent = 'Да';
-                yesLabel.className = 'form-check-label';
-                yesLabel.htmlFor = yesInput.id;
-                yesDiv.appendChild(yesInput);
-                yesDiv.appendChild(yesLabel);
-                div.appendChild(yesDiv);
-                const noDiv = document.createElement('div');
-                noDiv.className = 'form-check form-check-inline';
-                const noInput = document.createElement('input');
-                noInput.type = 'radio';
-                noInput.name = qid;
-                noInput.value = 'no';
-                noInput.id = `${qid}_no`;
-                noInput.className = 'form-check-input';
-                const noLabel = document.createElement('label');
-                noLabel.textContent = 'Нет';
-                noLabel.className = 'form-check-label';
-                noLabel.htmlFor = noInput.id;
-                noDiv.appendChild(noInput);
-                noDiv.appendChild(noLabel);
-                div.appendChild(noDiv);
-                inputRef = [yesInput, noInput];
-                if (saved[qid]) {
-                    if (saved[qid] === 'yes') yesInput.checked = true;
-                    if (saved[qid] === 'no') noInput.checked = true;
-                }
-                yesInput.addEventListener('change', () => {
-                    if (yesInput.checked) saveAnswer(qid, 'yes');
-                    updateProgressBar();
-                    if (q.required) {
-                        if (yesInput.checked || noInput.checked) {
-                            div.classList.remove('border', 'border-danger');
-                        } else {
-                            div.classList.add('border', 'border-danger');
+                // Используем q.answers для вариантов
+                const opts = Array.isArray(q.answers) && q.answers.length === 2 ? q.answers : ['yes', 'no'];
+                const inputs = [];
+                opts.forEach((opt, i) => {
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'form-check form-check-inline';
+                    const optInput = document.createElement('input');
+                    optInput.type = 'radio';
+                    optInput.name = qid;
+                    optInput.value = opt;
+                    optInput.id = `${qid}_${i}`;
+                    optInput.className = 'form-check-input';
+                    const optLabel = document.createElement('label');
+                    optLabel.textContent = opt;
+                    optLabel.className = 'form-check-label';
+                    optLabel.htmlFor = optInput.id;
+                    optDiv.appendChild(optInput);
+                    optDiv.appendChild(optLabel);
+                    div.appendChild(optDiv);
+                    inputs.push(optInput);
+                    if (saved[qid] === opt) optInput.checked = true;
+                    optInput.addEventListener('change', () => {
+                        if (optInput.checked) saveAnswer(qid, opt);
+                        updateProgressBar();
+                        if (q.required) {
+                            if (inputs.some(inp => inp.checked)) {
+                                div.classList.remove('border', 'border-danger');
+                            } else {
+                                div.classList.add('border', 'border-danger');
+                            }
                         }
-                    }
+                    });
                 });
-                noInput.addEventListener('change', () => {
-                    if (noInput.checked) saveAnswer(qid, 'no');
-                    updateProgressBar();
-                    if (q.required) {
-                        if (yesInput.checked || noInput.checked) {
-                            div.classList.remove('border', 'border-danger');
-                        } else {
-                            div.classList.add('border', 'border-danger');
-                        }
-                    }
-                });
+                inputRef = inputs;
             } else if (q.type === 'datetime') {
                 const input = document.createElement('input');
                 input.type = 'datetime-local';
@@ -186,9 +160,78 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 });
                 div.appendChild(input);
                 inputRef = input;
+            } else if (q.type === 'radio') {
+                // Варианты из q.answers
+                const inputs = [];
+                (q.answers || []).forEach((opt, i) => {
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'form-check';
+                    const optInput = document.createElement('input');
+                    optInput.type = 'radio';
+                    optInput.name = qid;
+                    optInput.value = opt;
+                    optInput.id = `${qid}_radio_${i}`;
+                    optInput.className = 'form-check-input';
+                    const optLabel = document.createElement('label');
+                    optLabel.textContent = opt;
+                    optLabel.className = 'form-check-label';
+                    optLabel.htmlFor = optInput.id;
+                    optDiv.appendChild(optInput);
+                    optDiv.appendChild(optLabel);
+                    div.appendChild(optDiv);
+                    inputs.push(optInput);
+                    if (saved[qid] === opt) optInput.checked = true;
+                    optInput.addEventListener('change', () => {
+                        if (optInput.checked) saveAnswer(qid, opt);
+                        updateProgressBar();
+                        if (q.required) {
+                            if (inputs.some(inp => inp.checked)) {
+                                div.classList.remove('border', 'border-danger');
+                            } else {
+                                div.classList.add('border', 'border-danger');
+                            }
+                        }
+                    });
+                });
+                inputRef = inputs;
+            } else if (q.type === 'checkbox') {
+                // Варианты из q.answers
+                const inputs = [];
+                (q.answers || []).forEach((opt, i) => {
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'form-check';
+                    const optInput = document.createElement('input');
+                    optInput.type = 'checkbox';
+                    optInput.name = qid;
+                    optInput.value = opt;
+                    optInput.id = `${qid}_checkbox_${i}`;
+                    optInput.className = 'form-check-input';
+                    const optLabel = document.createElement('label');
+                    optLabel.textContent = opt;
+                    optLabel.className = 'form-check-label';
+                    optLabel.htmlFor = optInput.id;
+                    optDiv.appendChild(optInput);
+                    optDiv.appendChild(optLabel);
+                    div.appendChild(optDiv);
+                    inputs.push(optInput);
+                    if (Array.isArray(saved[qid]) && saved[qid].includes(opt)) optInput.checked = true;
+                    optInput.addEventListener('change', () => {
+                        // Собираем все отмеченные
+                        const checked = inputs.filter(inp => inp.checked).map(inp => inp.value);
+                        saveAnswer(qid, checked);
+                        updateProgressBar();
+                        if (q.required) {
+                            if (checked.length > 0) {
+                                div.classList.remove('border', 'border-danger');
+                            } else {
+                                div.classList.add('border', 'border-danger');
+                            }
+                        }
+                    });
+                });
+                inputRef = inputs;
             }
             form.insertBefore(div, form.lastElementChild);
-            // Add divider after each question except the last
             if (idx < data.questions.length - 1) {
                 const hr = document.createElement('hr');
                 hr.className = 'question-divider';
@@ -213,18 +256,20 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Collect answers from localStorage
             let answers = {};
             try {
                 answers = JSON.parse(localStorage.getItem(storageKey)) || {};
             } catch (e) { answers = {}; }
-            // Validate required questions
             let allValid = true;
             let firstInvalidDiv = null;
             Object.entries(requiredQuestions).forEach(([qid, { label, inputRef, div }]) => {
                 let answered = false;
                 if (Array.isArray(inputRef)) {
-                    answered = inputRef.some(inp => inp.checked);
+                    if (inputRef[0] && inputRef[0].type === 'checkbox') {
+                        answered = inputRef.some(inp => inp.checked);
+                    } else {
+                        answered = inputRef.some(inp => inp.checked);
+                    }
                 } else if (inputRef && inputRef.type === 'range') {
                     answered = !!interactedSliders[qid];
                 } else if (inputRef) {
@@ -242,20 +287,22 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
                 if (firstInvalidDiv) {
                     firstInvalidDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-                // Show important image for 3 seconds
                 const img = document.getElementById('important-img');
                 if (img) {
                     img.style.display = 'block';
-                    img.src = '/static/tomka_important.png'; // always reset to important on show
+                    img.src = '/static/tomka_important.png';
                     setTimeout(() => { img.style.display = 'none'; }, 5000);
                 }
                 return;
             }
-            // Fill ansvers fields in questions
+            // Формируем ответы в новой структуре
             const questionsWithAnswers = data.questions.map(q => {
+                const qid = q.uuid;
+                let answer = answers[qid];
+                if (q.type === 'checkbox' && !Array.isArray(answer)) answer = answer ? [answer] : [];
                 return {
                     ...q,
-                    ansvers: [answers[q.id] !== undefined ? answers[q.id] : '']
+                    answers: answer !== undefined ? answer : []
                 };
             });
             const payload = {
@@ -297,7 +344,6 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             localStorage.setItem(storageKey, JSON.stringify(answers));
         }
 
-        // Функция для обновления прогресс-бара
         function updateProgressBar() {
             const totalRequired = Object.keys(requiredQuestions).length;
             if (totalRequired === 0) {
@@ -307,7 +353,11 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             let answered = 0;
             Object.entries(requiredQuestions).forEach(([qid, { inputRef }]) => {
                 if (Array.isArray(inputRef)) {
-                    if (inputRef.some(inp => inp.checked)) answered++;
+                    if (inputRef[0] && inputRef[0].type === 'checkbox') {
+                        if (inputRef.some(inp => inp.checked)) answered++;
+                    } else {
+                        if (inputRef.some(inp => inp.checked)) answered++;
+                    }
                 } else if (inputRef && inputRef.type === 'range') {
                     if (interactedSliders[qid]) answered++;
                 } else if (inputRef) {
@@ -318,6 +368,5 @@ fetch(`/api/survey/${window.SURVEY_UUID}`)
             document.getElementById('progress-bar').style.width = percent + '%';
         }
 
-        // Вызов при инициализации
         updateProgressBar();
     }); 
