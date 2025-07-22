@@ -134,12 +134,28 @@ def admin_panel():
 
 @app.route('/admin/get_all_surveys')
 def get_all_surveys():
-    # Заглушка: возвращаем тестовые данные
-    return jsonify({
-        "survey001": "Опрос по продукту",
-        "survey002": "Оценка сервиса",
-        "survey003": "Фидбек клиентов"
-    })
+    return jsonify([
+        {
+            "uuid": "b8be6e48-eee2-49bb-b7b4-5654947d3fac",
+            "name": "string",
+            "start_date": "2025-07-22T07:16:23.694000+03:00",
+            "end_date": "2025-07-22T07:16:23.694000+03:00",
+            "manager_id": "2754f397-012f-4919-8faa-95cb1d45b656"
+        },
+        {
+            "uuid": "aedaf34d-e899-4b4b-a76d-5fe2e8aac7c6",
+            "name": "Второй",
+            "start_date": "2025-07-22T09:59:27.442000+03:00",
+            "end_date": "2025-07-22T09:59:27.442000+03:00",
+            "manager_id": "2754f397-012f-4919-8faa-95cb1d45b656"
+        }
+    ])
+    try:
+        response = requests.get(f"http://app_manager:87/admin/get_all_surveys/{uuid}")
+        data = response.json()
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({"status": "error", "message": str(e)})
 
 
 @app.route('/admin/get_stat<uuid>')
@@ -190,14 +206,20 @@ def get_stat(uuid):
                         "categories": [
                             {"label": "/static/tomka.jpg", "value": 0, "color": ""}
                         ]
-                    }]}]
+                    }]}, {
+                "diagrams": [{
+                    "uuid": "diagram-002",
+                    "title": "Продажи по регионам",
+                    "type": "table",
+                    "categories": [
+                        ["", "value", "size"], ["apple", "1", "2"], ["melon", "4", "4"]
+                    ]}
+                ]}]
     })
-
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)

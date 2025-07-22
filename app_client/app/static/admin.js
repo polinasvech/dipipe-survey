@@ -5,12 +5,14 @@ fetch('/admin/get_all_surveys')
     .then(data => {
         const select = document.getElementById('survey-select');
         select.innerHTML = '';
-        Object.entries(data).forEach(([uuid, title]) => {
-            const opt = document.createElement('option');
-            opt.value = uuid;
-            opt.textContent = title;
-            select.appendChild(opt);
-        });
+        if (Array.isArray(data)) {
+            data.forEach(survey => {
+                const opt = document.createElement('option');
+                opt.value = survey.uuid;
+                opt.textContent = survey.name;
+                select.appendChild(opt);
+            });
+        }
         select.insertAdjacentHTML('afterbegin', '<option value="" disabled selected>Выберите опрос</option>');
     });
 
@@ -100,6 +102,25 @@ select.addEventListener('change', function() {
                                 };
                                 img.src = cat.label;
                             });
+                        } else if (diagram.type === 'table') {
+                            // Рисуем таблицу по двумерному массиву
+                            const table = document.createElement('table');
+                            table.className = 'admin-table';
+                            const rows = diagram.categories;
+                            if (Array.isArray(rows)) {
+                                rows.forEach((row, rIdx) => {
+                                    const tr = document.createElement('tr');
+                                    row.forEach((cell, cIdx) => {
+                                        const td = document.createElement(rIdx === 0 ? 'th' : 'td');
+                                        td.textContent = cell;
+                                        tr.appendChild(td);
+                                    });
+                                    table.appendChild(tr);
+                                });
+                            }
+                            // Вставляем таблицу в центр canvas
+                            canvas.style.display = 'none';
+                            diagramDiv.appendChild(table);
                         } else {
                             // fallback: просто список
                             const cats = document.createElement('div');
