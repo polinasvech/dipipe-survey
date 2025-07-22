@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 
 from app_manager.app.models.question_model import Question
-from app_manager.app.models.survey_model import Survey as Survey,GetSurveyRequest,CreateSurveyRequest
+from app_manager.app.models.survey_model import Survey as Survey,CreateSurveyRequest
 from app_manager.app.services.survey_service import SurveyService
 from app_manager.app.services.question_service import QuestionService
 
@@ -19,41 +19,15 @@ def get_all_surveys(
     return survey_service.get_all_surveys()
 
 
-@survey_router.get("/{survey_id}", response_model=GetSurveyRequest)
+@survey_router.get("/{survey_id}", response_model=Survey)
 def get_survey_by_id(
         survey_id: UUID,
         survey_service: SurveyService = Depends(SurveyService),
-        question_service: QuestionService = Depends(QuestionService),
 ):
     try:
-        logger.info(f"Fetching survey with ID: {survey_id}")
-
-        # 1. Получаем опрос
-        survey = survey_service.get_survey_by_id(survey_id)
-        if not survey:
-            logger.error(f"Survey not found for ID: {survey_id}")
-            raise HTTPException(status_code=404, detail="Survey not found")
-
-        logger.info(f"Found survey: {survey.name}")
-
-        # 2. Получаем вопросы
-        questions = question_service.get_questions_by_survey_id(survey_id)
-        logger.info(f"Found {len(questions)} questions for survey")
-
-        # 3. Формируем ответ
-        response = GetSurveyRequest(
-            id=survey_id,
-            title=survey.name,
-            questions=questions
-        )
-
-        return response
-
-    except HTTPException:
-        raise  # Пробрасываем уже обработанные 404 ошибки
+        return survey_service.get_survey_by_id(survey_id)
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
-        raise HTTPException(500, detail="Internal Server Error")
+        raise HTTPException(404, detail=str(e))
 
 @survey_router.post("/create_survey")
 def create_survey(

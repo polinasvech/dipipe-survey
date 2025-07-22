@@ -21,7 +21,3 @@ class CreateSurveyRequest(BaseModel):
     manager_id: Optional[UUID] = None
 
 
-class GetSurveyRequest(BaseModel):
-    id: UUID
-    title: str
-    questions: List[Question]
