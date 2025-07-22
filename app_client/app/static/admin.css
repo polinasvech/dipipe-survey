@@ -1,0 +1,10 @@
+/* admin.css */
+#survey-select-container {
+    max-width: 400px;
+    margin: 0 auto 24px auto;
+}
+#survey-select {
+    font-size: 1.1em;
+    border-radius: 8px;
+    padding: 8px 12px;
+} 

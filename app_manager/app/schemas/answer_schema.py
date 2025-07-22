@@ -1,6 +1,9 @@
 from schemas.base_schema import Base
 from sqlalchemy import Column, ForeignKey, Integer, PrimaryKeyConstraint, Text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
+from schemas.base_schema import Base
 
 
 class Answer(Base):
@@ -11,4 +14,4 @@ class Answer(Base):
     answer_int = Column(Integer)
     answer_text = Column(Text)
 
-    __table_args__ = (PrimaryKeyConstraint("client_id", "survey_id"),)
+    question = relationship("Question", back_populates="answers")
