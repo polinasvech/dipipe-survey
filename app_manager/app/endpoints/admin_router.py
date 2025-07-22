@@ -7,19 +7,19 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
 from uuid import uuid4
 from sqlalchemy.orm import Session
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.category_schema import Category
-from app_manager.app.models.answer_model import Answer,CreateAnswerRequest
-from app_manager.app.models.question_model import Question
-from app_manager.app.models.dto_models import SurveyDTO
-from app_manager.app.schemas.syrvey_schema import Survey
-from app_manager.app.models.survey_model import Survey as SurveyModel
-from app_manager.app.services.answer_service import AnswerService
-from app_manager.app.services.question_service import QuestionService
-from app_manager.app.services.survey_service import SurveyService
-from app_manager.app.schemas.answer_schema import Answer
-from app_manager.app.schemas.question_schema import Question
-from app_manager.app.models.dto_models import StatDTO,QuestionBase,AnswerWithQuestion,AnswerBase
+from schemas.base_schema import get_db
+from schemas.category_schema import Category
+from models.answer_model import Answer,CreateAnswerRequest
+from models.question_model import Question
+from models.dto_models import SurveyDTO
+from schemas.syrvey_schema import Survey
+from models.survey_model import Survey as SurveyModel
+from services.answer_service import AnswerService
+from services.question_service import QuestionService
+from services.survey_service import SurveyService
+from schemas.answer_schema import Answer
+from schemas.question_schema import Question
+from models.dto_models import StatDTO,QuestionBase,AnswerWithQuestion,AnswerBase
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from uuid import UUID, uuid4
