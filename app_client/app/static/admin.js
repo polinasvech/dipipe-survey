@@ -1,8 +1,10 @@
 // admin.js
 // Загрузка списка опросов для выпадающего списка на странице администратора
+let allSurveys = [];
 fetch('/admin/get_all_surveys')
     .then(res => res.json())
     .then(data => {
+        allSurveys = Array.isArray(data) ? data : [];
         const select = document.getElementById('survey-select');
         select.innerHTML = '';
         if (Array.isArray(data)) {
@@ -16,15 +18,65 @@ fetch('/admin/get_all_surveys')
         select.insertAdjacentHTML('afterbegin', '<option value="" disabled selected>Выберите опрос</option>');
     });
 
+function renderSurveyInfo(survey, stat) {
+    const infoDiv = document.getElementById('survey-info') || document.createElement('div');
+    infoDiv.id = 'survey-info';
+    infoDiv.style.marginTop = '18px';
+    infoDiv.style.fontSize = '1em';
+    infoDiv.innerHTML = '';
+    if (!survey) {
+        infoDiv.innerHTML = '';
+        return infoDiv;
+    }
+    // 1. Ссылка на опрос
+    const link = document.createElement('a');
+    link.href = `/survey/${survey.uuid}`;
+    link.textContent = 'Ссылка на опрос';
+    link.target = '_blank';
+    link.style.display = 'block';
+    link.style.marginBottom = '8px';
+    infoDiv.appendChild(link);
+    // 2. Дата начала
+    const start = document.createElement('div');
+    start.textContent = 'Дата начала: ' + (survey.start_date ? new Date(survey.start_date).toLocaleString() : '-');
+    infoDiv.appendChild(start);
+    // 3. Дата окончания
+    const end = document.createElement('div');
+    end.textContent = 'Дата окончания: ' + (survey.end_date ? new Date(survey.end_date).toLocaleString() : '-');
+    infoDiv.appendChild(end);
+    // 4. Число заполнений
+    const count = document.createElement('div');
+    count.textContent = 'Число заполнений: ' + (stat && typeof stat.count === 'number' ? stat.count : '-');
+    infoDiv.appendChild(count);
+    // 5. Число вопросов
+    let questionsCount = '-';
+    if (stat && Array.isArray(stat.answers) && stat.answers.length > 0) {
+        // Считаем уникальные question_id
+        const qids = new Set(stat.answers.map(a => a.question_id));
+        questionsCount = qids.size;
+    }
+    infoDiv.appendChild(document.createElement('div')).textContent = 'Число вопросов: ' + questionsCount;
+    return infoDiv;
+}
+
 const select = document.getElementById('survey-select');
 select.addEventListener('change', function() {
     const uuid = this.value;
     if (!uuid) return;
+    const survey = allSurveys.find(s => s.uuid === uuid);
     fetch(`/admin/get_stat${uuid}`)
         .then(res => res.json())
         .then(data => {
-            const container = document.querySelector('.data-container');
-            container.innerHTML = '';
+            // Информация об опросе
+            const infoDiv = renderSurveyInfo(survey, data);
+            const infoContainer = document.getElementById('survey-select-container');
+            // Удаляем старую инфу если есть
+            const old = document.getElementById('survey-info');
+            if (old) old.remove();
+            infoContainer.appendChild(infoDiv);
+            // Диаграммы
+            const dataContainer = document.querySelector('.data-container');
+            dataContainer.innerHTML = '';
             if (!data.blocks || !Array.isArray(data.blocks)) return;
             data.blocks.forEach((block, blockIdx) => {
                 const blockDiv = document.createElement('div');
@@ -173,7 +225,7 @@ select.addEventListener('change', function() {
                         blockDiv.appendChild(diagramDiv);
                     });
                 }
-                container.appendChild(blockDiv);
+                dataContainer.appendChild(blockDiv);
             });
         });
 }); 
