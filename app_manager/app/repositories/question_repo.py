@@ -22,7 +22,10 @@ class QuestionRepo:
         return DBQuestion(
             uuid=question.uuid,
             survey_id=question.survey_id,
-            text=question.text
+            category_id=question.category_id,
+            text=question.text,
+            type=question.type,
+            required=question.required
         )
 
     def create_question(self, question: Question) -> Question:
