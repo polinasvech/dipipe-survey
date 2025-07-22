@@ -1,6 +1,12 @@
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
+from enum import StrEnum
+
+
+class QuestionType(StrEnum):
+    NUMERIC = "numeric"
+    STRING = "string"
 
 
 class Question(BaseModel):

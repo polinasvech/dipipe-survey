@@ -13,15 +13,15 @@ class MetricValues(BaseModel):
     CSI: float
     probability_repeat_purchase: float = Field(..., alias="Вероятность Повторной Покупки")
 
-    # class Config:
-    #     validate_by_name = True
-
 
 class NpsSchema(BaseModel):
     average: float
     promoters: int
     neutral: int
     critics: int
+    promoters_percent: float
+    critics_percent: float
+    nps_val: float = Field(..., description="(% Промоутеры - % Критики)")
 
 
 class NpsResponse(BaseModel):

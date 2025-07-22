@@ -1,4 +1,4 @@
-import json
+from helpers import load_json
 import sys
 from typing import Dict, Tuple
 from uuid import UUID
@@ -12,21 +12,10 @@ class Calculator:
     def __init__(self, survey_id: UUID):
         self.survey_id = survey_id
 
-        self.metrics_map = self.load_json("metrics_map.json")
-        self.questions_map = self.load_json("questions_map.json")
+        self.metrics_map = load_json("metrics_map.json")
+        self.questions_map = load_json("questions_map.json")
 
         self.main_df = self.prep_df()
-
-    @staticmethod
-    def load_json(filename: str) -> Dict:
-        try:
-            with open(f"data/{filename}", "r") as file:
-                data = json.load(file)
-                return data
-        except FileNotFoundError:
-            print("Error: 'data.json' not found.")
-        except json.JSONDecodeError:
-            print("Error: Invalid JSON format in 'data.json'.")
 
     @staticmethod
     def get_conn():
@@ -76,6 +65,11 @@ class Calculator:
             result[category]["promoters"] = sum(1 for i in non_zero_answers if i >= 9)
             result[category]["neutral"] = sum(1 for i in non_zero_answers if i in [7, 8])
             result[category]["critics"] = sum(1 for i in non_zero_answers if i <= 6)
+            result[category]["promoters_percent"] = round(result[category]["promoters"] / len(non_zero_answers), 2)
+            result[category]["critics_percent"] = round(result[category]["critics"] / len(non_zero_answers), 2)
+            result[category]["nps_val"] = round(
+                result[category]["promoters_percent"] - result[category]["critics_percent"], 2
+            )
 
         avg_total = sum(val["average"] for val in result.values()) / len(result)
 

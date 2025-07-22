@@ -3,9 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from models.question_model import Question
-from models.survey_model import CreateSurveyRequest, GetSurveyRequest
-from models.survey_model import Survey as Survey
+from models.survey_model import CreateSurveyRequest, Survey
 from services.question_service import QuestionService
 from services.survey_service import SurveyService
 
@@ -20,7 +18,7 @@ def get_all_surveys(
     return survey_service.get_all_surveys()
 
 
-@survey_router.get("/{survey_id}", response_model=GetSurveyRequest)
+@survey_router.get("/{survey_id}", response_model=Survey)
 def get_survey_by_id(
     survey_id: UUID,
     survey_service: SurveyService = Depends(SurveyService),
@@ -42,7 +40,7 @@ def get_survey_by_id(
         logger.info(f"Found {len(questions)} questions for survey")
 
         # 3. Формируем ответ
-        response = GetSurveyRequest(id=survey_id, title=survey.name, questions=questions)
+        response = Survey(id=survey_id, title=survey.name, questions=questions)
 
         return response
 

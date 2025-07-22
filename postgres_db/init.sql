@@ -23,18 +23,19 @@ CREATE TABLE IF NOT EXISTS surveys (
          FOREIGN KEY (manager_id)
          REFERENCES managers(uuid)
 );
+
 CREATE TABLE IF NOT EXISTS categories (
     uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    text text NOT NULL
+    text text UNIQUE NOT NULL
 );
-CREATE TYPE question_type_enum AS ENUM ('Numeric', 'String');
+
 
 CREATE TABLE IF NOT EXISTS questions (
     uuid         uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     survey_id    uuid NOT NULL,
-    category_id  uuid NOT NULL,
+    category_id  uuid,
     text         text NOT NULL,
-    type         question_type_enum NOT NULL,
+    type         text NOT NULL,
     required     boolean NOT NULL DEFAULT false,
 
     CONSTRAINT fk_survey

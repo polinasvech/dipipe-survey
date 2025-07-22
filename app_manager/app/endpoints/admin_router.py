@@ -9,7 +9,7 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 from app_manager.app.schemas.base_schema import get_db
 from app_manager.app.schemas.category_schema import Category
-from app_manager.app.models.answer_model import Answer,CreateAnswerRequest
+from app_manager.app.models.answer_model import Answer, CreateAnswerRequest
 from app_manager.app.models.question_model import Question
 from app_manager.app.models.survey_model import GetSurveyRequest
 from app_manager.app.services.answer_service import AnswerService
@@ -20,12 +20,11 @@ admin_router = APIRouter(prefix="/admin", tags=["Admin"])
 logger = logging.getLogger(__name__)
 
 
-
 @admin_router.get("/{survey_id}", response_model=GetSurveyRequest)
 def get_survey_by_id(
-        survey_id: UUID,
-        survey_service: SurveyService = Depends(SurveyService),
-        question_service: QuestionService = Depends(QuestionService),
+    survey_id: UUID,
+    survey_service: SurveyService = Depends(SurveyService),
+    question_service: QuestionService = Depends(QuestionService),
 ):
     try:
         logger.info(f"Fetching survey with ID: {survey_id}")
@@ -43,11 +42,7 @@ def get_survey_by_id(
         logger.info(f"Found {len(questions)} questions for survey")
 
         # 3. Формируем ответ
-        response = GetSurveyRequest(
-            id=survey_id,
-            title=survey.name,
-            questions=questions
-        )
+        response = GetSurveyRequest(id=survey_id, title=survey.name, questions=questions)
 
         return response
 
@@ -56,6 +51,7 @@ def get_survey_by_id(
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         raise HTTPException(500, detail="Internal Server Error")
+
 
 @admin_router.get("/get_stat/{survey_id}")
 def get_statistics_by_survey_id(
@@ -67,21 +63,22 @@ def get_statistics_by_survey_id(
     except KeyError:
         raise HTTPException(404, detail=f"Question with survey_id={survey_id} not found")
 
+
 @admin_router.post("/categories/import")
 async def import_categories(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    if not file.filename.endswith(('.xlsx', '.xls')):
+    if not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(status_code=400, detail="Файл должен быть Excel (.xlsx или .xls)")
 
     try:
         contents = await file.read()
         df = pd.read_excel(contents)
 
-        if 'text' not in df.columns:
+        if "text" not in df.columns:
             raise HTTPException(status_code=400, detail="Ожидается колонка 'text' в файле")
 
         categories = []
         for _, row in df.iterrows():
-            text = str(row['text']).strip()
+            text = str(row["text"]).strip()
             if text:
                 category = Category(uuid=uuid4(), text=text)
                 categories.append(category)
