@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
-from app_client.app.schemas.base_schema import Base
+from app_manager.app.schemas.base_schema import Base
 
 class Client(Base):
     __tablename__ = 'clients'
