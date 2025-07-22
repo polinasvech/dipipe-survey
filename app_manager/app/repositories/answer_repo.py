@@ -2,11 +2,11 @@ import traceback
 from typing import List
 from uuid import UUID
 
+from models.answer_model import Answer as Answer
+from models.answer_model import CreateAnswerRequest
+from schemas.answer_schema import Answer as DBAnswer
+from schemas.base_schema import get_db
 from sqlalchemy.orm import Session
-
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.answer_schema import Answer as DBAnswer
-from app_manager.app.models.answer_model import Answer as Answer, CreateAnswerRequest
 
 
 class AnswerRepo:
@@ -26,7 +26,7 @@ class AnswerRepo:
             survey_id=answer.survey_id,
             question_id=answer.question_id,
             answer_int=answer.answer_int,
-            answer_text=answer.answer_text
+            answer_text=answer.answer_text,
         )
 
     def create_answer(self, answer: Answer) -> Answer:
@@ -49,10 +49,7 @@ class AnswerRepo:
 
     def delete_answer(self, client_id: UUID, survey_id: UUID) -> None:
         try:
-            self.db.query(DBAnswer).filter(
-                DBAnswer.client_id == client_id,
-                DBAnswer.survey_id == survey_id
-            ).delete()
+            self.db.query(DBAnswer).filter(DBAnswer.client_id == client_id, DBAnswer.survey_id == survey_id).delete()
             self.db.commit()
         except Exception:
             traceback.print_exc()

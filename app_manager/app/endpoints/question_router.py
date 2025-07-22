@@ -1,8 +1,8 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.models.question_model import Question, CreateQuestionRequest, Types
-from app_manager.app.services.question_service import QuestionService
+from fastapi import APIRouter, Depends, HTTPException
+from models.question_model import CreateQuestionRequest, Question
+from services.question_service import QuestionService
 
 question_router = APIRouter(prefix="/questions", tags=["Questions"])
 
@@ -24,6 +24,7 @@ def get_question_by_id(
     except KeyError:
         raise HTTPException(404, detail=f"Question with id={question_id} not found")
 
+
 @question_router.get("/get_question_by_survey/{survey_id}")
 def get_question_by_survey_id(
     survey_id: UUID,
@@ -34,18 +35,14 @@ def get_question_by_survey_id(
     except KeyError:
         raise HTTPException(404, detail=f"Question with survey_id={survey_id} not found")
 
+
 @question_router.post("/")
 def create_question(
     request: CreateQuestionRequest,
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.create_question(request.survey_id,
-                                                request.category_id,
-                                                request.text,
-                                                request.type,
-                                                request.required
-                                                )
+        return question_service.create_question(request.survey_id, request.text)
     except Exception as e:
         raise HTTPException(400, detail=str(e))
 
@@ -55,16 +52,10 @@ def update_question(
     question_id: UUID,
     survey_id: UUID,
     text: str,
-    category_id: UUID,
-    type:Types,
-    required:bool,
     question_service: QuestionService = Depends(QuestionService),
 ) -> Question:
     try:
-        return question_service.update_question(question_id, survey_id,category_id, text,
-                                                type,
-                                                required
-                                                )
+        return question_service.update_question(question_id, survey_id, text)
     except KeyError:
         raise HTTPException(404, detail=f"Question with id={question_id} not found")
 

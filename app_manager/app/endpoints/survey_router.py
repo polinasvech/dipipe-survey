@@ -1,16 +1,17 @@
 import logging
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
-from app_manager.app.models.question_model import Question
-from app_manager.app.models.survey_model import Survey as Survey,GetSurveyRequest,CreateSurveyRequest
-from app_manager.app.services.survey_service import SurveyService
-from app_manager.app.services.question_service import QuestionService
+from models.question_model import Question
+from models.survey_model import CreateSurveyRequest, GetSurveyRequest
+from models.survey_model import Survey as Survey
+from services.question_service import QuestionService
+from services.survey_service import SurveyService
 
 survey_router = APIRouter(prefix="/surveys", tags=["Surveys"])
 logger = logging.getLogger(__name__)
+
 
 @survey_router.get("/")
 def get_all_surveys(
@@ -21,9 +22,9 @@ def get_all_surveys(
 
 @survey_router.get("/{survey_id}", response_model=GetSurveyRequest)
 def get_survey_by_id(
-        survey_id: UUID,
-        survey_service: SurveyService = Depends(SurveyService),
-        question_service: QuestionService = Depends(QuestionService),
+    survey_id: UUID,
+    survey_service: SurveyService = Depends(SurveyService),
+    question_service: QuestionService = Depends(QuestionService),
 ):
     try:
         logger.info(f"Fetching survey with ID: {survey_id}")
@@ -41,11 +42,7 @@ def get_survey_by_id(
         logger.info(f"Found {len(questions)} questions for survey")
 
         # 3. Формируем ответ
-        response = GetSurveyRequest(
-            id=survey_id,
-            title=survey.name,
-            questions=questions
-        )
+        response = GetSurveyRequest(id=survey_id, title=survey.name, questions=questions)
 
         return response
 
@@ -54,6 +51,7 @@ def get_survey_by_id(
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         raise HTTPException(500, detail="Internal Server Error")
+
 
 @survey_router.post("/create_survey")
 def create_survey(
@@ -91,4 +89,3 @@ def delete_survey(
         return {"detail": "Survey deleted successfully"}
     except KeyError:
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
-

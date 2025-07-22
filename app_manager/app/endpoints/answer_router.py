@@ -1,10 +1,9 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
-from app_manager.app.models.answer_model import Answer,CreateAnswerRequest
-from app_manager.app.services.answer_service import AnswerService
+from models.answer_model import Answer, CreateAnswerRequest
+from services.answer_service import AnswerService
 
 answer_router = APIRouter(prefix="/answers", tags=["Answers"])
 

@@ -1,6 +1,8 @@
 from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict
+
 
 class Answer(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -10,6 +12,7 @@ class Answer(BaseModel):
     survey_id: UUID
     answer_int: Optional[int] = None
     answer_text: Optional[str] = None
+
 
 class CreateAnswerRequest(BaseModel):
     client_id: UUID

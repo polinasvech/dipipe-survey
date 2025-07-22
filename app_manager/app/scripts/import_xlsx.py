@@ -32,7 +32,6 @@ class InitialParser:
         # create questions
         question_map = {}
         for i, question_text in enumerate(header[4:], start=4):
-            print(i, question_text)
             question_uid = self.insert_question(conn, main_survey_id, question_text)
             question_map[i] = question_uid
 
@@ -43,7 +42,6 @@ class InitialParser:
             division = row[2].strip()
             ca_type = row[3].strip()
             client_id = self.insert_client(conn, tin, preferences, division, ca_type)
-            print("CHECKCLIENT", client_id)
             if not client_id:
                 print("Could not insert client for row:", row)
                 continue
@@ -54,11 +52,8 @@ class InitialParser:
                 if question_id is None:
                     # Skip if no valid question record was created.
                     continue
-
                 # Insert answer record.
-                self.insert_answer(
-                    conn, client_id, main_survey_id, question_id, answer
-                )
+                self.insert_answer(conn, client_id, main_survey_id, question_id, answer)
 
         conn.close()
         print("Import complete.")
@@ -95,9 +90,7 @@ class InitialParser:
     def insert_question(conn, survey_id, question_text):
         """Добавляет запись в questions и возвращает id"""
         # regexp для текста вопроса
-        pattern = re.compile(
-            r"^(?:\d+\.\s*)(.*?)(?:\s*-\s*Строка\s+\d+\s*-\s*.+)?\s*$", re.UNICODE
-        )
+        pattern = re.compile(r"^(?:\d+\.\s*)(.*?)(?:\s*-\s*Строка\s+\d+\s*-\s*.+)?\s*$", re.UNICODE)
         cleared_text = pattern.match(question_text)
         if not cleared_text:
             return
@@ -168,9 +161,7 @@ class InitialParser:
             VALUES (%s, %s, %s, %s, %s);
         """
         try:
-            cur.execute(
-                insert_query, (client_id, survey_id, question_id, answer_int, answer_text)
-            )
+            cur.execute(insert_query, (client_id, survey_id, question_id, answer_int, answer_text))
             conn.commit()
         except Exception as e:
             conn.rollback()

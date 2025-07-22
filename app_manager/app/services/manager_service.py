@@ -1,10 +1,9 @@
-from uuid import UUID, uuid4
 from typing import List
+from uuid import UUID, uuid4
 
 from fastapi import Depends
-
-from app_manager.app.schemas.manager_schema import Manager
-from app_manager.app.repositories.manager_repo import ManagerRepo
+from repositories.manager_repo import ManagerRepo
+from schemas.manager_schema import Manager
 
 
 class ManagerService:
