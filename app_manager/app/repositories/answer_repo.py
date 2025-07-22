@@ -16,12 +16,15 @@ class AnswerRepo:
         self.db = next(get_db())
 
     def _map_to_model(self, answer: DBAnswer) -> Answer:
-        return Answer(**dict(answer))
+        result = Answer.from_orm(answer)
+        return result
 
     def _map_to_schema(self, answer: Answer) -> DBAnswer:
         return DBAnswer(
+            uuid = answer.uuid,
             client_id=answer.client_id,
             survey_id=answer.survey_id,
+            question_id=answer.question_id,
             answer_int=answer.answer_int,
             answer_text=answer.answer_text
         )

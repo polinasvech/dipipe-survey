@@ -27,7 +27,7 @@ manager_schema.Base.metadata.create_all(bind=engine)
 question_schema.Base.metadata.create_all(bind=engine)
 syrvey_schema.Base.metadata.create_all(bind=engine)
 template_schema.Base.metadata.create_all(bind=engine)
-
+client_schema.Base.metadata.create_all(bind=engine)
 @app.on_event('startup')
 def startup():
     logger.info("Application started")
@@ -39,7 +39,7 @@ app.include_router(manager_router)
 app.include_router(question_router)
 app.include_router(survey_router)
 app.include_router(template_router)
-
+app.include_router(client_router)
 # from scripts.import_xlsx import InitialParser
 #
 # if __name__ == "__main__":
