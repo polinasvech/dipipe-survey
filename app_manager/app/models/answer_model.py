@@ -1,9 +1,9 @@
 from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict
 
-from app_manager.app.models.question_model import Question
-
+from models.question_model import Question
 
 class Answer(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -15,6 +15,7 @@ class Answer(BaseModel):
     answer_text: Optional[str] = None
 
     question: Optional[Question] = None  # Добавляем вложенный объект
+
 
 class CreateAnswerRequest(BaseModel):
     client_id: UUID
@@ -33,4 +34,4 @@ class AnswerRead(BaseModel):
     answer_text: Optional[str]
 
     class Config:
-        orm_mode = True  # 👈 Важно!
+        orm_mode = True 

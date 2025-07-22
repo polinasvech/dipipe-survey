@@ -2,11 +2,11 @@ import traceback
 from typing import List
 from uuid import UUID
 
+from models.manager_model import CreateManagerRequest
+from models.manager_model import Manager as Manager
+from schemas.base_schema import get_db
+from schemas.manager_schema import Manager as DBManager
 from sqlalchemy.orm import Session
-
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.manager_schema import Manager as DBManager
-from app_manager.app.models.manager_model import Manager as Manager, CreateManagerRequest
 
 
 class ManagerRepo:
@@ -19,10 +19,7 @@ class ManagerRepo:
         return Manager.from_orm(manager)
 
     def _map_to_schema(self, manager: Manager) -> DBManager:
-        return DBManager(
-            uuid=manager.uuid,
-            full_name=manager.full_name
-        )
+        return DBManager(uuid=manager.uuid, full_name=manager.full_name)
 
     def create_manager(self, manager: Manager) -> Manager:
         try:

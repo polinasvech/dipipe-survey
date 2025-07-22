@@ -2,11 +2,11 @@ import traceback
 from typing import List
 from uuid import UUID
 
+from models.template_model import CreateTemplateRequest
+from models.template_model import Template as Template
+from schemas.base_schema import get_db
+from schemas.template_schema import Template as DBTemplate
 from sqlalchemy.orm import Session
-
-from app_manager.app.schemas.base_schema import get_db
-from app_manager.app.schemas.template_schema import Template as DBTemplate
-from app_manager.app.models.template_model import Template as Template, CreateTemplateRequest
 
 
 class TemplateRepo:
@@ -21,9 +21,7 @@ class TemplateRepo:
 
     def _map_to_schema(self, template: Template) -> DBTemplate:
         return DBTemplate(
-            uuid=template.uuid,
-            initial_survey_id=template.initial_survey_id,
-            template_text=template.template_text
+            uuid=template.uuid, initial_survey_id=template.initial_survey_id, template_text=template.template_text
         )
 
     def create_template(self, template: Template) -> Template:

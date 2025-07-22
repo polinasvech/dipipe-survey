@@ -1,11 +1,10 @@
-from uuid import UUID, uuid4
-from typing import List
 from datetime import datetime
+from typing import List
+from uuid import UUID, uuid4
 
 from fastapi import Depends
-
-from app_manager.app.schemas.syrvey_schema import Survey
-from app_manager.app.repositories.survey_repo import SurveyRepo
+from repositories.survey_repo import SurveyRepo
+from schemas.syrvey_schema import Survey
 
 
 class SurveyService:

@@ -1,10 +1,9 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-
-from app_manager.app.models.template_model import Template,CreateTemplateRequest
-from app_manager.app.services.template_service import TemplateService
+from models.template_model import CreateTemplateRequest, Template
+from services.template_service import TemplateService
 
 template_router = APIRouter(prefix="/templates", tags=["Templates"])
 

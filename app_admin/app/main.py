@@ -1,18 +1,22 @@
 import os
 
 import requests
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "kalanod"
+app.config["SECRET_KEY"] = "kalanod"
 
-@app.route('/')
+
+@app.route("/")
 def hello():
-    return 'Hello, Flask!'
+    return "Hello, Flask!"
+
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=80)
+    return render_template("404.html"), 404
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=80)

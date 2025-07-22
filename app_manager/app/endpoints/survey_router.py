@@ -1,16 +1,23 @@
 import logging
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_manager.app.models.question_model import Question
-from app_manager.app.models.survey_model import Survey as Survey,CreateSurveyRequest
-from app_manager.app.services.survey_service import SurveyService
-from app_manager.app.services.question_service import QuestionService
+
+from models.question_model import Question
+from models.survey_model import Survey as Survey,CreateSurveyRequest
+from services.survey_service import SurveyService
+from services.question_service import QuestionService
+from models.question_model import Question
+from models.survey_model import CreateSurveyRequest, GetSurveyRequest
+from models.survey_model import Survey as Survey
+from services.question_service import QuestionService
+from services.survey_service import SurveyService
 
 survey_router = APIRouter(prefix="/surveys", tags=["Surveys"])
 logger = logging.getLogger(__name__)
+
 
 @survey_router.get("/")
 def get_all_surveys(
@@ -28,6 +35,7 @@ def get_survey_by_id(
         return survey_service.get_survey_by_id(survey_id)
     except Exception as e:
         raise HTTPException(404, detail=str(e))
+
 
 @survey_router.post("/create_survey")
 def create_survey(
@@ -65,4 +73,3 @@ def delete_survey(
         return {"detail": "Survey deleted successfully"}
     except KeyError:
         raise HTTPException(404, detail=f"Survey with id={survey_id} not found")
-
