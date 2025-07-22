@@ -157,8 +157,8 @@ def get_stat(uuid):
                         "type": "round",
                         "categories": [
                             {"label": "Электроника", "value": 120000, "color": "#3498db"},
-                            {"label": "Одежда", "value": 85000, "color": "#3498db"},
-                            {"label": "Продукты", "value": 150000, "color": "#3498db"}
+                            {"label": "Одежда", "value": 85000, "color": "#e67e22"},
+                            {"label": "Продукты", "value": 150000, "color": "#2ecc71"}
                         ]
                     },
                     {
@@ -166,9 +166,9 @@ def get_stat(uuid):
                         "title": "Продажи по регионам",
                         "type": "column",
                         "categories": [
-                            {"label": "Москва", "value": 180000, "color": "#3498db"},
+                            {"label": "Москва", "value": 180000, "color": "#9b59b6"},
                             {"label": "СПб", "value": 130000, "color": "#3498db"},
-                            {"label": "Казань", "value": 70000, "color": "#3498db"}
+                            {"label": "Казань", "value": 70000, "color": "#e74c3c"}
                         ]
                     }
                 ]
@@ -176,40 +176,22 @@ def get_stat(uuid):
             {
                 "diagrams": [
                     {
-                        "uuid": "diagram-001",
-                        "title": "Продажи по категориям",
-                        "type": "round",
+                        "uuid": "diagram-003",
+                        "title": "Текстовая информация",
+                        "type": "text",
                         "categories": [
-                            {"label": "Электроника", "value": 120000, "color": "#3498db"},
-                            {"label": "Одежда", "value": 85000, "color": "#3498db"},
-                            {"label": "Продукты", "value": 150000, "color": "#3498db"}
+                            {"label": "Всего продаж: 350 000 руб.", "value": 0, "color": "#ffffff"}
                         ]
                     },
                     {
-                        "uuid": "diagram-002",
-                        "title": "Продажи по регионам",
-                        "type": "column",
+                        "uuid": "diagram-004",
+                        "title": "Фото руководителя",
+                        "type": "image",
                         "categories": [
-                            {"label": "Москва", "value": 180000, "color": "#3498db"},
-                            {"label": "СПб", "value": 130000, "color": "#3498db"},
-                            {"label": "Казань", "value": 70000, "color": "#3498db"}
+                            {"label": "/static/tomka.jpg", "value": 0, "color": ""}
                         ]
-                    },
-                    {
-                        "uuid": "diagram-002",
-                        "title": "Продажи по регионам",
-                        "type": "column",
-                        "categories": [
-                            {"label": "Москва", "value": 180000, "color": "#3498db"},
-                            {"label": "СПб", "value": 130000, "color": "#3498db"},
-                            {"label": "Казань", "value": 70000, "color": "#3498db"}
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-    )
+                    }]}]
+    })
 
 
 @app.errorhandler(404)

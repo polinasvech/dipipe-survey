@@ -40,7 +40,6 @@ select.addEventListener('change', function() {
                         canvas.width = 400;
                         canvas.height = 400;
                         diagramDiv.appendChild(canvas);
-                        // Построение диаграммы
                         if (diagram.type === 'round') {
                             new Chart(canvas, {
                                 type: 'pie',
@@ -72,6 +71,34 @@ select.addEventListener('change', function() {
                                     plugins: { legend: { display: false } },
                                     scales: { y: { beginAtZero: true } }
                                 }
+                            });
+                        } else if (diagram.type === 'text') {
+                            // Рисуем текст в canvas
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.font = '24px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = '#222';
+                            const text = diagram.categories.map(cat => cat.label).join(', ');
+                            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+                        } else if (diagram.type === 'image') {
+                            // Рисуем картинку в canvas
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            diagram.categories.forEach(cat => {
+                                const img = new window.Image();
+                                img.onload = function() {
+                                    // Центрируем картинку
+                                    let scale = Math.min(canvas.width / img.width, canvas.height / img.height, 1);
+                                    let w = img.width * scale;
+                                    let h = img.height * scale;
+                                    let x = (canvas.width - w) / 2;
+                                    let y = (canvas.height - h) / 2;
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    ctx.drawImage(img, x, y, w, h);
+                                };
+                                img.src = cat.label;
                             });
                         } else {
                             // fallback: просто список

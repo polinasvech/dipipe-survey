@@ -18,12 +18,13 @@
     gap: 24px;
     margin-bottom: 32px;
     min-height: 500px;
+    max-height: 1000px;
     width: 100%;
 }
 .admin-diagram {
     flex: 1 1 0;
     min-width: 0;
-    min-height: 500px;
+    max-height: 500px;
     background: #e3f2fd;
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
@@ -44,4 +45,18 @@
     font-weight: 600;
     margin-bottom: 16px;
     text-align: center;
+}
+@media (max-width: 700px) {
+    .admin-block {
+        flex-direction: column;
+        min-height: unset;
+        max-height: unset;
+        gap: 16px;
+    }
+    .admin-diagram {
+        min-height: unset;
+        max-height: unset;
+        width: 100%;
+        margin-bottom: 12px;
+    }
 } 
