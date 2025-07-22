@@ -1,22 +1,3 @@
-import asyncio
-
-from fastapi import FastAPI
-
-from app_client.app.endpoints.client_router import client_router
-from app_client.app.schemas import client_schema
-from app_client.app.schemas.base_schema import engine
-app = FastAPI(title='App')
-client_schema.Base.metadata.create_all(bind=engine)
-
-
-@app.on_event('startup')
-def startup():
-    loop = asyncio.get_event_loop()
-
-
-app.include_router(client_router)
-
-
 import os
 
 import requests
@@ -24,7 +5,7 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "kalanod"
+app.config['SECRET_KEY'] = "mykey"  # Replace with a secure key in production
 
 
 @app.route('/')
@@ -57,42 +38,14 @@ def get_survey_by_id(uuid):
         "id": "survey001",
         "questions": [
             {
-                "id": "q16",
+                "id": "q1",
                 "text": "What is your name? (ИНН или название компании)",
                 "type": "tin",
                 "required": True,
                 "ansvers": []
             },
             {
-                "id": "q25",
-                "text": "What is your favorite programming language?",
-                "type": "str",
-                "required": False,
-                "ansvers": []
-            },
-            {
-                "id": "q24",
-                "text": "What is your favorite programming language?",
-                "type": "str",
-                "required": False,
-                "ansvers": []
-            },
-            {
-                "id": "q23",
-                "text": "What is your favorite programming language?",
-                "type": "str",
-                "required": False,
-                "ansvers": []
-            },
-            {
-                "id": "q22",
-                "text": "What is your favorite programming language?",
-                "type": "str",
-                "required": False,
-                "ansvers": []
-            },
-            {
-                "id": "q21",
+                "id": "q2",
                 "text": "What is your favorite programming language?",
                 "type": "str",
                 "required": False,
@@ -124,8 +77,5 @@ def get_survey_by_id(uuid):
         ]
     }
     return jsonify(survey)
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)

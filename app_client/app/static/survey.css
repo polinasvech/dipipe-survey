@@ -1,0 +1,95 @@
+body {
+    background: #ffffff;
+    font-size: 1.2rem;
+    color: #000000;
+}
+.survey-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 40px 24px 40px;
+}
+.survey-title {
+    font-size: 2.3rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #f47832;
+}
+.form-label {
+    font-weight: 500;
+    color: #000000;
+    font-size: 1.15em;
+}
+.form-control {
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #000000;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+}
+.btn-primary {
+    margin: 32px 0 0 0;
+    background: #f47832;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 12px 32px;
+    font-size: 1.1em;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #d9651e;
+
+}
+.question-divider {
+    border: none;
+    border-top: 1.5px solid #e0e0e0;
+    margin: 32px 0 32px 0;
+}
+.mb-3 {
+    margin-bottom: 0 !important;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+}
+.server-response-bg {
+    margin: 0 auto 0 auto;
+    width: 100%;
+    max-width: 100%;
+    height: 250px;
+    background: url('/static/tomka_thinking.jpg') center center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    position: relative;
+}
+.server-response-text {
+    color: #000000;
+    padding: 0px 0px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-align: center;
+    max-width: 90%;
+}
+@media (max-width: 700px) {
+    .survey-container {
+        max-width: 98vw;
+        padding: 18px 4vw 18px 4vw;
+    }
+    .survey-title {
+        font-size: 1.5rem;
+    }
+    .form-label, .form-control, .btn-primary {
+        font-size: 1em;
+    }
+    .question-divider {
+        margin: 20px 0 20px 0;
+    }
+} 
