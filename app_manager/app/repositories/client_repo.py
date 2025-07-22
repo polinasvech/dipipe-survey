@@ -4,9 +4,9 @@ from typing import List
 from typing import Union
 from sqlalchemy.orm import Session
 
-from app_client.app.schemas.base_schema import get_db
-from app_client.app.schemas.client_schema import Client as DBClient
-from app_client.app.models.client_model import Client as Client, CreateClientRequest
+from app_manager.app.schemas.base_schema import get_db
+from app_manager.app.schemas.client_schema import Client as DBClient
+from app_manager.app.models.client_model import Client as Client, CreateClientRequest
 
 
 class ClientRepo:

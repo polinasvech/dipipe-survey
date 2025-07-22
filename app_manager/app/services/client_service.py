@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from fastapi import Depends
 
-from app_client.app.schemas.client_schema import Client
-from app_client.app.repositories.client_repo import ClientRepo
+from app_manager.app.schemas.client_schema import Client
+from app_manager.app.repositories.client_repo import ClientRepo
 
 
 class ClientService:

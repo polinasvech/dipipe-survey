@@ -7,7 +7,8 @@ from app_manager.app.endpoints.manager_router import manager_router
 from app_manager.app.endpoints.question_router import question_router
 from app_manager.app.endpoints.survey_router import survey_router
 from app_manager.app.endpoints.template_router import template_router
-from app_manager.app.schemas import answer_schema,manager_schema,question_schema,syrvey_schema,template_schema
+from app_manager.app.endpoints.client_router import client_router
+from app_manager.app.schemas import answer_schema,manager_schema,question_schema,syrvey_schema,template_schema,client_schema
 from app_manager.app.schemas.base_schema import engine
 app = FastAPI(title='App')
 
@@ -39,9 +40,9 @@ app.include_router(question_router)
 app.include_router(survey_router)
 app.include_router(template_router)
 
-from scripts.import_xlsx import InitialParser
-
-if __name__ == "__main__":
-    parser = InitialParser()
-    parser.run()
+# from scripts.import_xlsx import InitialParser
+#
+# if __name__ == "__main__":
+#     parser = InitialParser()
+#     parser.run()
 

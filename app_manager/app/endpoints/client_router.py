@@ -1,8 +1,8 @@
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
-from app_client.app.models.client_model import Client,CreateClientRequest
-from app_client.app.services.client_service import ClientService
+from app_manager.app.models.client_model import Client,CreateClientRequest
+from app_manager.app.services.client_service import ClientService
 
 client_router = APIRouter(prefix="/clients", tags=["Clients"])
 
