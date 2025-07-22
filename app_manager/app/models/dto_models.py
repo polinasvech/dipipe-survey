@@ -4,7 +4,7 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
-from app_manager.app.models.question_model import Question
+from models.question_model import Question
 
 class SurveyDTO(BaseModel):
     id: UUID
@@ -12,8 +12,8 @@ class SurveyDTO(BaseModel):
     questions: List[Question]
 
 class QuestionType(str, Enum):
-    NUMERIC = "Numeric"
-    STRING = "String"
+    NUMERIC = "NUMERIC"
+    STRING = "STRING"
 
 class QuestionBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
