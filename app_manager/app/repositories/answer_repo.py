@@ -62,8 +62,11 @@ class AnswerRepo:
     def update_answer(self, answer: Answer) -> Answer:
         try:
             db_answer = self.db.query(DBAnswer).filter(DBAnswer.uuid == answer.uuid).first()
-            for field, value in answer.model_dump().items():
-                setattr(db_answer, field, value)
+            db_answer.client_id = answer.client_id,
+            db_answer.survey_id = answer.survey_id,
+            db_answer.question_id = answer.question_id,
+            db_answer.answer_int = answer.answer_int,
+            db_answer.answer_text = answer.answer_text
             self.db.commit()
             return self._map_to_model(db_answer)
         except Exception:
