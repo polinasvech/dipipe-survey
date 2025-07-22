@@ -13,7 +13,7 @@ class Diagram(BaseModel):
     uuid: str
     title: str
     type: str
-    categories: List[Category]
+    categories: List[Category] | List[List[str]]
 
 
 class Block(BaseModel):
