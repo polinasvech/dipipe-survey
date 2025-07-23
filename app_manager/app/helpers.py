@@ -15,10 +15,10 @@ def load_json(filename: str) -> Dict:
 
 
 def colors3():
-    return ["#FF7800", "#828583", "#828583"]
+    return ["#fbfbfa", "#828583", "#e7d49b"]
 
 def colors10():
-    return ["#E7A16D", "#E7A16D", "#E7A16D", "#FFC000", "#ADADAD", "#E7A16D", "#EC6608", "#887B73", "#FFC000", "#887B73"]
+    return ["#e8a675", "#ec6608", "#887b73", "#ffc000", "#adadad"]
 
 def generate_random_hex_color():
     hex_chars = "0123456789ABCDEF"
