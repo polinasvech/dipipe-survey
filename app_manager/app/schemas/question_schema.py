@@ -1,7 +1,6 @@
 # from models.question_model import QuestionType  # если Enum Types объявлен в question_schema.py
 from schemas.base_schema import Base
-from sqlalchemy import Boolean, Column
-from sqlalchemy import ForeignKey, Text
+from sqlalchemy import Boolean, Column, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 

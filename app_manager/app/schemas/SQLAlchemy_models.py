@@ -1,7 +1,6 @@
 from schemas.base_schema import Base
 from sqlalchemy import UUID as SQLUUID
-from sqlalchemy import Boolean, Column
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 

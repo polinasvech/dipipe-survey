@@ -5,7 +5,8 @@ from uuid import UUID, uuid4
 import pandas as pd
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from models.answer_model import Answer, CreateAnswerRequest
-from models.dto_models import AnswerBase, AnswerWithQuestion, QuestionBase, StatDTO, SurveyDTO
+from models.dto_models import (AnswerBase, AnswerWithQuestion, QuestionBase,
+                               StatDTO, SurveyDTO)
 from models.question_model import Question
 from models.survey_model import Survey as SurveyModel
 from schemas.answer_schema import Answer

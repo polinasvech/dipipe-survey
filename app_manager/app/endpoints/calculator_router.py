@@ -1,10 +1,12 @@
 import logging
 from collections import Counter
+from itertools import cycle
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
-from helpers import generate_random_hex_color
-from schemas.calculator_schemas import BaseRequest, CalculatorResponse, NpsResponse
+from helpers import colors3, colors10
+from schemas.calculator_schemas import (BaseRequest, CalculatorResponse,
+                                        NpsResponse)
 from schemas.diagrams import Block, Category, Diagram, ReportTemplate
 from services.calculator import Calculator
 from services.client_service import ClientService
@@ -52,15 +54,18 @@ async def dashboard(
         raise HTTPException(status_code=400, detail="Error fetching clients")
 
     # BLOCK 1
-    main_colors = [generate_random_hex_color() for _ in range(25)]  # TODO
+    main_colors = colors10()
+
     division_counter = Counter(client.division for client in clients)
+    colors_map = list(zip(division_counter.items(), cycle(main_colors)))
+
     division_diagram = Diagram(
         uuid=str(uuid4()),
         title="По дивизионам",
         type="bar",
         categories=[
             Category(label=division_count_tuple[0], value=division_count_tuple[1], color=color)
-            for color, division_count_tuple in zip(main_colors, division_counter.items())
+            for division_count_tuple, color in colors_map
         ],
     )
 
@@ -92,7 +97,7 @@ async def dashboard(
     calculator = Calculator(survey_id=survey_id)
     metrics_stat = calculator.get_main_metrics()
 
-    main_colors = [generate_random_hex_color() for _ in range(3)]
+    main_colors = colors3()
 
     loyalty_diagram = Diagram(
         uuid=str(uuid4()),
@@ -127,7 +132,10 @@ async def dashboard(
 
     # BLOCK 3
     nps, avg_total = calculator.calculate_nps()
-    main_colors = [generate_random_hex_color() for _ in range(len(nps))]
+
+    main_colors = colors10()
+    main_colors = [c for v, c in list(zip(nps, cycle(main_colors)))]
+
     categories_cols = []
     categories_table = [[":)", ":|", ":("]]
     for i, key in enumerate(nps):
@@ -143,16 +151,18 @@ async def dashboard(
         type="column",
         categories=categories_cols,
     )
+    satisfaction_by_process_diagram_block = Block(diagrams=[columns_diagram])
+
     table_diagram = Diagram(
         uuid=str(uuid4()),
         title="",
         type="table",
         categories=categories_table,
     )
-    satisfaction_by_process_block = Block(diagrams=[columns_diagram, table_diagram])
+    satisfaction_by_process_table_block = Block(diagrams=[table_diagram])
 
     return ReportTemplate(
         uuid=str(uuid4()),
         title="Статистика по клиентам",
-        blocks=[clients_block, main_metrics_blocks, satisfaction_by_process_block],
+        blocks=[clients_block, main_metrics_blocks, satisfaction_by_process_diagram_block, satisfaction_by_process_table_block],
     )

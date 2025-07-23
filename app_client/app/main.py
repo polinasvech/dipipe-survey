@@ -1,10 +1,10 @@
 import logging
 
 import requests
-
 # from asgiref.wsgi import WsgiToAsgi
 from config.settings import settings
-from flask import Flask, Response, jsonify, redirect, render_template, request, session, url_for
+from flask import (Flask, Response, jsonify, redirect, render_template,
+                   request, session, url_for)
 
 logging.basicConfig(
     level=logging.INFO,

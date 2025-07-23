@@ -14,6 +14,12 @@ def load_json(filename: str) -> Dict:
         print("Error: Invalid JSON format in 'data.json'.")
 
 
+def colors3():
+    return ["#FF7800", "#828583", "#828583"]
+
+def colors10():
+    return ["#E7A16D", "#E7A16D", "#E7A16D", "#FFC000", "#ADADAD", "#E7A16D", "#EC6608", "#887B73", "#FFC000", "#887B73"]
+
 def generate_random_hex_color():
     hex_chars = "0123456789ABCDEF"
     hex_color = "#"

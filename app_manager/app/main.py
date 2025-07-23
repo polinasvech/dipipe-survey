@@ -11,15 +11,9 @@ from endpoints.survey_router import survey_router
 from endpoints.template_router import template_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-from schemas import (
-    answer_schema,
-    category_schema,
-    client_schema,
-    manager_schema,
-    question_schema,
-    syrvey_schema,
-    template_schema,
-)
+from schemas import (answer_schema, category_schema, client_schema,
+                     manager_schema, question_schema, syrvey_schema,
+                     template_schema)
 from schemas.base_schema import engine
 
 logging.basicConfig(
