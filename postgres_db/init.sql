@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS questions (
     uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     survey_id UUID NOT NULL,
-    category_id UUID NOT NULL,
+    category_id UUID,
     text TEXT NOT NULL,
     type question_type_enum NOT NULL,
     required BOOLEAN NOT NULL DEFAULT false,

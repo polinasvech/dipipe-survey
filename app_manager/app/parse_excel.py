@@ -67,7 +67,6 @@ class InitialParser:
 
         # create questions
         question_map = {}
-        print(categories_map)
         for i, question_text in enumerate(header[4:], start=4):
             cleared = self.clear_question_text(question_text)
             category_id = categories_map.get(cleared, None)
@@ -182,7 +181,7 @@ class InitialParser:
             RETURNING uuid;
         """
         try:
-            cur.execute(insert_query, (tin, preferences, division, ca_type))
+            cur.execute(insert_query, (str(int(tin)), preferences, division, ca_type))
             client_id = cur.fetchone()[0]
             conn.commit()
             return client_id
