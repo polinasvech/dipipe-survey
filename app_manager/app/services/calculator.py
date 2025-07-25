@@ -1,4 +1,3 @@
-from helpers import load_json
 import sys
 from typing import Dict, Tuple
 from uuid import UUID
@@ -6,6 +5,7 @@ from uuid import UUID
 import pandas as pd
 import psycopg2
 from config.settings import settings
+from helpers import load_json
 
 
 class Calculator:
@@ -66,6 +66,7 @@ class Calculator:
             result[category]["neutral"] = sum(1 for i in non_zero_answers if i in [7, 8])
             result[category]["critics"] = sum(1 for i in non_zero_answers if i <= 6)
             result[category]["promoters_percent"] = round(result[category]["promoters"] / len(non_zero_answers), 2)
+            result[category]["neutral_percent"] = round(result[category]["promoters"] / len(non_zero_answers), 2)
             result[category]["critics_percent"] = round(result[category]["critics"] / len(non_zero_answers), 2)
             result[category]["nps_val"] = round(
                 result[category]["promoters_percent"] - result[category]["critics_percent"], 2
@@ -87,6 +88,34 @@ class Calculator:
                 main_metrics[key][metric] = round(ranks_df[q_text].corr(ranks_df[question_text], method="spearman"), 2)
 
         return main_metrics
+
+    def get_main_metrics(self):
+        """Подготавливает данные для круговых диаграмм для 'Лояльность', 'Удовлетворенность', 'Вероятность Повт. Покупки'"""
+        df = self.main_df.copy(deep=True)
+        questions_map = {
+            "Какова вероятность, что Вы порекомендуете компанию как поставщика трубной продукции своим коллегам и партнерам?": "loyalty",
+            "Оцените, пожалуйста, насколько вы удовлетворены взаимодействием с ТД ТМК": "satisfaction",
+            "Какова вероятность, что при возникновении потребности в будущем вы выберете поставщиком ТД ТМК": "repeat_purchase",
+        }
+        df = df[questions_map.keys()]
+        df.rename(columns=questions_map, inplace=True)
+
+        total_respondents = len(df)  # общее кол-во ответивших
+        stats = {}
+
+        # критики (0-6), нейтралы (7-8), сторонники (9-10)
+        for column in df.columns:
+            critics = df[(df[column] >= 0) & (df[column] <= 6)][column].count()
+            neutrals = df[(df[column] >= 7) & (df[column] <= 8)][column].count()
+            promoters = df[(df[column] >= 9) & (df[column] <= 10)][column].count()
+
+            stats[column] = {
+                "Критики": round(critics / total_respondents * 100, 2),
+                "Нейтралы": round(neutrals / total_respondents * 100, 2),
+                "Сторонники": round(promoters / total_respondents * 100, 2),
+            }
+
+        return stats
 
     def prep_df(self) -> pd.DataFrame:
         """Собирает данные для анализа в общий df"""

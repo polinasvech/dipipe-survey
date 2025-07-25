@@ -2,7 +2,6 @@ import traceback
 from typing import List
 from uuid import UUID
 
-from models.question_model import CreateQuestionRequest
 from models.question_model import Question as Question
 from schemas.base_schema import get_db
 from schemas.question_schema import Question as DBQuestion
@@ -19,7 +18,14 @@ class QuestionRepo:
         return Question.from_orm(question)
 
     def _map_to_schema(self, question: Question) -> DBQuestion:
-        return DBQuestion(uuid=question.uuid, survey_id=question.survey_id, text=question.text)
+        return DBQuestion(
+            uuid=question.uuid,
+            survey_id=question.survey_id,
+            category_id=question.category_id,
+            text=question.text,
+            type=question.type,
+            required=question.required,
+        )
 
     def create_question(self, question: Question) -> Question:
         try:

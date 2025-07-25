@@ -1,19 +1,19 @@
-import asyncio
 import logging
 from contextlib import asynccontextmanager
 
+from endpoints.admin_router import admin_router
 from endpoints.answer_router import answer_router
 from endpoints.calculator_router import router as calculator_router
+from endpoints.client_router import client_router
 from endpoints.manager_router import manager_router
 from endpoints.question_router import question_router
 from endpoints.survey_router import survey_router
 from endpoints.template_router import template_router
-
-# from endpoints.client_router import client_router
-# from endpoints.admin_router import admin_router
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-from schemas import answer_schema, client_schema, manager_schema, question_schema, syrvey_schema, template_schema
+from schemas import (answer_schema, category_schema, client_schema,
+                     manager_schema, question_schema, syrvey_schema,
+                     template_schema)
 from schemas.base_schema import engine
 
 logging.basicConfig(
@@ -28,6 +28,8 @@ manager_schema.Base.metadata.create_all(bind=engine)
 question_schema.Base.metadata.create_all(bind=engine)
 syrvey_schema.Base.metadata.create_all(bind=engine)
 template_schema.Base.metadata.create_all(bind=engine)
+client_schema.Base.metadata.create_all(bind=engine)
+category_schema.Base.metadata.create_all(bind=engine)
 
 
 @asynccontextmanager
@@ -50,5 +52,5 @@ app.include_router(question_router)
 app.include_router(survey_router)
 app.include_router(template_router)
 app.include_router(calculator_router)
-# app.include_router(client_router)
-# app.include_router(admin_router)
+app.include_router(client_router)
+app.include_router(admin_router)
