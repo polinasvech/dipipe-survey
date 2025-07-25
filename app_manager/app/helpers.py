@@ -9,9 +9,9 @@ def load_json(filename: str) -> Dict:
             data = json.load(file)
             return data
     except FileNotFoundError:
-        print("Error: 'data.json' not found.")
+        print(f"Error: '{filename}' not found.")
     except json.JSONDecodeError:
-        print("Error: Invalid JSON format in 'data.json'.")
+        print(f"Error: Invalid JSON format in '{filename}'.")
 
 
 def colors3():
